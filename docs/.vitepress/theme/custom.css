@@ -1,0 +1,22 @@
+.vp-doc img {
+  max-width: 100%;
+  max-height: min(400px, 240mm);
+  width: auto;
+  height: auto;
+  border-radius: 8px;
+  object-fit: contain;
+  display: block;
+}
+
+.vp-doc .image-row {
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  margin: 12px 0;
+}
+
+.vp-doc .image-row img {
+  margin: 0;
+  flex-shrink: 1;
+  min-width: 0;
+}

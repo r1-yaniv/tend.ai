@@ -1,0 +1,27 @@
+{
+  "name": "medical-idea-tbd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": { "doc": "docs" },
+  "scripts": {
+    "docs:dev": "concurrently \"node scripts/export-pdf-public.mjs --watch\" \"vitepress dev docs\"",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "docs:pdf": "node scripts/export-pdf.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "md-to-pdf": "^5.2.5",
+    "vitepress": "^1.6.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "puppeteer"
+    ]
+  }
+}
