@@ -33,21 +33,28 @@ function PChat({ go, setPendingShare }) {
         borderBottom:`.5px solid ${P.panelEdge}`, background:P.bg,
       }}>
         <button onClick={() => go('home')} style={iconBtnP}>{PI.back(20)}</button>
-        <MayaMark size={32} />
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:14, fontWeight:600, fontFamily:P.serif, fontStyle:'italic' }}>Maya</div>
-          <div style={{ fontSize:10.5, color:P.faint, display:'flex', alignItems:'center', gap:4 }}>
-            <span style={{ width:6, height:6, borderRadius:'50%', background:P.sage }} />
-            Dr. Levin's companion · here for you
+        <button onClick={() => go('shari')} style={{
+          display:'flex', alignItems:'center', gap:10,
+          background:'transparent', border:0, padding:0, cursor:'pointer', flex:1, textAlign:'left',
+        }}>
+          <MayaMark size={32} ringed />
+          <div style={{ flex:1 }}>
+            <div style={{ fontSize:14, fontWeight:600, fontFamily:P.serif, fontStyle:'italic', color:P.fg, display:'flex', alignItems:'center', gap:4 }}>
+              Shari <span style={{ fontSize:10, color:P.faint, fontFamily:P.font, fontStyle:'normal', fontWeight:500 }}>↗</span>
+            </div>
+            <div style={{ fontSize:10.5, color:P.faint, display:'flex', alignItems:'center', gap:4 }}>
+              <span style={{ width:6, height:6, borderRadius:'50%', background:P.sage }} />
+              Dr. Kaplan's voice · here for you
+            </div>
           </div>
-        </div>
+        </button>
         <button style={iconBtnP}>{PI.more(20)}</button>
       </div>
 
       {/* Messages */}
       <div ref={scrollerRef} style={{ flex:1, overflowY:'auto', padding:'14px 16px 4px', position:'relative' }}>
         <Anno n={7} top={10} right={8}>
-          <strong>Maya speaks in Dr. Levin's tone</strong> — warm-direct, no corporate-AI hedging. She knows only what Dr. Levin has shared with her, and only operates within Chen's prescription.
+          <strong>Shari speaks in Dr. Kaplan's voice</strong> — warm-direct, no corporate-AI hedging. She knows only what Dr. Kaplan has shared with her, and only operates within Chen's prescription.
         </Anno>
         {messages.map((m, i) => <Bubble key={i} m={m} go={go} setPendingShare={setPendingShare} />)}
         {typing && <TypingDots />}
@@ -73,7 +80,7 @@ function PChat({ go, setPendingShare }) {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); send(input); } }}
-            placeholder="Tell Maya what's going on…"
+            placeholder="Tell Shari what's going on…"
             rows={1}
             style={{
               flex:1, border:0, outline:'none', background:'transparent',
@@ -90,7 +97,7 @@ function PChat({ go, setPendingShare }) {
           }}>{PI.send(16)}</button>
         </div>
         <div style={{ fontSize:10.5, color:P.faint, padding:'6px 6px 0', display:'flex', alignItems:'center', gap:5 }}>
-          {PI.lock(10)} On-device · Maya summarizes only what you approve
+          {PI.lock(10)} On-device · Shari summarizes only what you approve
         </div>
       </div>
     </div>
@@ -108,8 +115,8 @@ const SEED_MSGS = [
   { who:'chen', text:'cars outside. the fridge' },
   { who:'maya', text:'And one thing you can feel — physical, on your body right now.' },
   { who:'chen', text:'the chair. cold under my feet' },
-  { who:'maya', text:'You\'re here. Stay with that for a moment.\n\nWhen you\'re ready — Dr. Levin and I have your café exposure on the plan for late afternoon. We can talk about it now or later. No pressure either way.' },
-  { who:'system', kind:'share-prompt', text:'Tend prepared a summary of last night\'s episode for Dr. Levin. Want to review what would be shared?' },
+  { who:'maya', text:'You\'re here. Stay with that for a moment.\n\nWhen you\'re ready — Dr. Kaplan and I have your café exposure on the plan for late afternoon. We can talk about it now or later. No pressure either way.' },
+  { who:'system', kind:'share-prompt', text:'Tend prepared a summary of last night\'s episode for Dr. Kaplan. Want to review what would be shared?' },
 ];
 
 const QUICK_REPLIES = ['Walk me through the exposure', 'Not now', 'I need a minute', 'Something\'s off'];
@@ -119,12 +126,12 @@ function generateReply(input) {
   if (lower.includes('exposure') || lower.includes('walk me')) {
     return [
       { who:'maya', text:'Okay. Café Albert, late afternoon, 20 minutes. Goal is to stay until your distress drops by half.\n\nBefore we plan it — what number is your distress right now, 0 to 10?', cta:'suds' },
-      { who:'system', kind:'note', text:'Maya is following Dr. Levin\'s in-vivo exposure protocol.' },
+      { who:'system', kind:'note', text:'Shari is following Dr. Kaplan\'s in-vivo exposure protocol.' },
     ];
   }
   if (lower.includes('off') || lower.includes('something')) {
     return [
-      { who:'maya', text:'I\'m listening. Take your time.\n\nIf this feels like more than I should hold, the crisis line is one tap away — Dr. Levin asked me to make sure you know.' },
+      { who:'maya', text:'I\'m listening. Take your time.\n\nIf this feels like more than I should hold, the crisis line is one tap away — Dr. Kaplan asked me to make sure you know.' },
     ];
   }
   if (lower.includes('not now') || lower.includes('minute')) {
@@ -141,7 +148,7 @@ function Bubble({ m, go, setPendingShare }) {
         padding:'12px 14px', margin:'10px 0',
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:6 }}>
-          <PPill tone="amber">{PI.share(10)} Share with Maya?</PPill>
+          <PPill tone="amber">{PI.share(10)} Share with Shari?</PPill>
         </div>
         <div style={{ fontSize:13, color:P.fg, lineHeight:1.5, marginBottom:10 }}>{m.text}</div>
         <div style={{ display:'flex', gap:8 }}>
@@ -215,8 +222,8 @@ function PPrescriptions({ go }) {
   const [tab, setTab] = React.useState('plan');
   return (
     <div style={{ flex:1, overflow:'auto', padding:'8px 20px 20px', position:'relative' }}>
-      <div style={{ padding:'8px 0 14px' }}>
-        <div style={{ fontSize:11.5, color:P.faint, fontWeight:500, letterSpacing:'.04em', textTransform:'uppercase' }}>Your plan from Dr. Levin</div>
+      <div style={{ padding:'8px 0 14px' }} data-plan-header>
+        <div style={{ fontSize:11.5, color:P.faint, fontWeight:500, letterSpacing:'.04em', textTransform:'uppercase' }}>Your plan from Dr. Kaplan</div>
         <h1 style={{ margin:'4px 0 6px', fontFamily:P.serif, fontWeight:400, fontSize:24, letterSpacing:'-0.01em' }}>
           Prolonged Exposure & sleep
         </h1>
@@ -273,7 +280,7 @@ function PPrescriptions({ go }) {
       <div style={{ height:14 }} />
       <SectionLabel>If things get heavy</SectionLabel>
       <div style={{ background:P.panel, border:`.5px solid ${P.panelEdge}`, borderRadius:12, padding:'12px 14px', fontSize:13, color:P.muted, lineHeight:1.55 }}>
-        Maya can sit with you and walk through grounding. For crisis — strong urges to harm yourself, or it feels too big — Maya will hand off straight to a human line. Dr. Levin asked her to.
+        Shari can sit with you and walk through grounding. For crisis — strong urges to harm yourself, or it feels too big — Shari will hand off straight to a human line. Dr. Kaplan asked her to.
       </div>
     </div>
   );
@@ -295,7 +302,7 @@ function PAdherence({ go, adherenceMode }) {
           {onTrack
             ? 'You\'ve held the plan more than not. That counts.'
             : offTrack
-            ? 'A lot got skipped. Not a verdict — just information for you and Dr. Levin.'
+            ? 'A lot got skipped. Not a verdict — just information for you and Dr. Kaplan.'
             : 'Some pieces happened, others didn\'t. Worth talking through.'}
         </div>
       </div>
@@ -404,19 +411,19 @@ function PProfile({ go }) {
           What Tend knows about you
         </h1>
         <div style={{ fontSize:12.5, color:P.muted, lineHeight:1.5 }}>
-          Everything Maya can see, in one place. You can change any of it.
+          Everything Shari can see, in one place. You can change any of it.
         </div>
       </div>
 
       <Anno n={9} top={20} right={4}>
-        <strong>Profile = transparency surface.</strong> The patient can see exactly what context flowed down from Dr. Levin into the on-device AI.
+        <strong>Profile = transparency surface.</strong> The patient can see exactly what context flowed down from Dr. Kaplan into the on-device AI.
       </Anno>
 
-      <ProfileCard title="From Dr. Levin" subtitle="Shared down to your device · Apr 28">
+      <ProfileCard title="From Dr. Kaplan" subtitle="Shared down to your device · Apr 28">
         <ProfileRow k="Diagnosis & phase" v="PTSD · Phase 2 (processing)" />
         <ProfileRow k="Trigger themes" v="Crowded indoor places, sudden loud sounds, scent of diesel" />
         <ProfileRow k="Grounding you prefer" v="3-2-1 sensory · cold water" />
-        <ProfileRow k="What Maya may guide" v="Grounding, exposure walk-throughs, in-the-moment de-escalation" last />
+        <ProfileRow k="What Shari may guide" v="Grounding, exposure walk-throughs, in-the-moment de-escalation" last />
       </ProfileCard>
 
       <div style={{ height:12 }} />
@@ -437,7 +444,7 @@ function PProfile({ go }) {
         {PI.share(16)}
         <div style={{ flex:1 }}>
           <div style={{ fontSize:13.5, fontWeight:600 }}>Everything you've shared up</div>
-          <div style={{ fontSize:11.5, color:P.muted, marginTop:1 }}>5 items shared with Dr. Levin · 7 days</div>
+          <div style={{ fontSize:11.5, color:P.muted, marginTop:1 }}>5 items shared with Dr. Kaplan · 7 days</div>
         </div>
         {PI.arrow(14)}
       </button>
@@ -493,7 +500,7 @@ function PShares({ go }) {
       }}>{PI.back(14)} Today</button>
 
       <div style={{ padding:'8px 0 14px' }}>
-        <div style={{ fontSize:11.5, color:P.faint, fontWeight:500, letterSpacing:'.04em', textTransform:'uppercase' }}>Share with Dr. Levin</div>
+        <div style={{ fontSize:11.5, color:P.faint, fontWeight:500, letterSpacing:'.04em', textTransform:'uppercase' }}>Share with Dr. Kaplan</div>
         <h1 style={{ margin:'4px 0', fontFamily:P.serif, fontWeight:400, fontSize:24, letterSpacing:'-0.01em' }}>
           Two waiting · five sent
         </h1>
@@ -547,7 +554,7 @@ function PShares({ go }) {
         border:`.5px dashed ${P.panelEdgeStrong}`, background:'transparent',
         textAlign:'left', cursor:'pointer',
       }}>
-        <div style={{ fontSize:12.5, fontWeight:600, marginBottom:3 }}>Dr. Levin asked for something</div>
+        <div style={{ fontSize:12.5, fontWeight:600, marginBottom:3 }}>Dr. Kaplan asked for something</div>
         <div style={{ fontSize:11.5, color:P.muted }}>"Can I see the transcript of last night's episode?" — tap to review.</div>
       </button>
     </div>
@@ -568,7 +575,7 @@ function PShareReview({ go, idx = 0 }) {
         <div style={{ width:64, height:64, borderRadius:'50%', background:P.sageSoft, color:P.sage, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:16 }}>
           {PI.check(28)}
         </div>
-        <div style={{ fontFamily:P.serif, fontSize:22, marginBottom:8 }}>Sent to Dr. Levin.</div>
+        <div style={{ fontFamily:P.serif, fontSize:22, marginBottom:8 }}>Sent to Dr. Kaplan.</div>
         <div style={{ fontSize:13, color:P.muted, lineHeight:1.5, maxWidth:280, marginBottom:18 }}>
           Stays in your share log. You can revoke any time before her next session.
         </div>
@@ -584,7 +591,7 @@ function PShareReview({ go, idx = 0 }) {
     <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:0, background:P.panel }}>
       <div style={{ padding:'10px 16px', display:'flex', alignItems:'center', gap:10, borderBottom:`.5px solid ${P.panelEdge}`, background:P.bg }}>
         <button onClick={() => go('shares')} style={iconBtnP}>{PI.close(20)}</button>
-        <div style={{ flex:1, fontSize:13.5, fontWeight:600 }}>Share with Maya</div>
+        <div style={{ flex:1, fontSize:13.5, fontWeight:600 }}>Share with Shari</div>
       </div>
 
       <div style={{ flex:1, overflow:'auto', padding:'14px 20px 18px', position:'relative' }}>
@@ -593,9 +600,9 @@ function PShareReview({ go, idx = 0 }) {
         </Anno>
 
         <div style={{ fontFamily:P.serif, fontSize:22, lineHeight:1.25, marginBottom:6 }}>{s.title}</div>
-        <div style={{ fontSize:12.5, color:P.muted, marginBottom:14 }}>From {s.when}. Maya prepared this. You decide what goes.</div>
+        <div style={{ fontSize:12.5, color:P.muted, marginBottom:14 }}>From {s.when}. Shari prepared this. You decide what goes.</div>
 
-        <SectionLabel>Summary · what Dr. Levin will see</SectionLabel>
+        <SectionLabel>Summary · what Dr. Kaplan will see</SectionLabel>
         <div style={{ background:'#fff', border:`.5px solid ${P.panelEdge}`, borderRadius:12, overflow:'hidden', marginBottom:14 }}>
           {s.bullets.map((b, j) => (
             <label key={j} style={{
@@ -620,8 +627,8 @@ function PShareReview({ go, idx = 0 }) {
           <label style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }}>
             <input type="checkbox" checked={includeTranscript} onChange={e => setIncludeTranscript(e.target.checked)} />
             <div style={{ flex:1 }}>
-              <div style={{ fontSize:13, fontWeight:500 }}>Full transcript of conversation with Maya</div>
-              <div style={{ fontSize:11.5, color:P.muted, marginTop:1 }}>Recommended <b>off</b> unless Dr. Levin specifically asked.</div>
+              <div style={{ fontSize:13, fontWeight:500 }}>Full transcript of conversation with Shari</div>
+              <div style={{ fontSize:11.5, color:P.muted, marginTop:1 }}>Recommended <b>off</b> unless Dr. Kaplan specifically asked.</div>
             </div>
           </label>
         </div>
@@ -629,7 +636,7 @@ function PShareReview({ go, idx = 0 }) {
         <div style={{ background:P.sageSoft, border:`.5px solid rgba(90,122,94,.18)`, borderRadius:12, padding:'10px 14px', display:'flex', gap:10, fontSize:12, color:P.fg, lineHeight:1.5 }}>
           {PI.lock(14)}
           <div>
-            Encrypted, sent only to Dr. Levin. You can revoke before Tuesday's session and it disappears from her view.
+            Encrypted, sent only to Dr. Kaplan. You can revoke before Tuesday's session and it disappears from her view.
           </div>
         </div>
       </div>
@@ -639,10 +646,30 @@ function PShareReview({ go, idx = 0 }) {
           flex:1, height:42, borderRadius:10, fontSize:13, fontWeight:600,
           background:'transparent', color:P.muted, border:`.5px solid ${P.panelEdge}`, cursor:'pointer',
         }}>Not now</button>
-        <button onClick={() => setStage('sent')} style={{
+        <button onClick={() => {
+          const sharesHint = {
+            target:'clinician',
+            anchor:'[data-shares-nav]',
+            title:'Chen shared an episode summary',
+            body:'A new approved share just landed in your Inbox · last night\'s nighttime episode (~22 min, grounding used).',
+            action:{ label:'Open inbox', route:'shares' },
+          };
+          if (window.tendBus) window.tendBus.postHint(sharesHint);
+          if (window.tendToast) {
+            window.tendToast({
+              tone:'success',
+              title:'Shared with Dr. Kaplan',
+              body:'She\'ll see this in her inbox.',
+              linkLabel:'See it on her side',
+              linkHref:'Clinician.html?route=shares',
+              hint: sharesHint,
+            });
+          }
+          setStage('sent');
+        }} style={{
           flex:2, height:42, borderRadius:10, fontSize:13, fontWeight:600,
           background:P.fg, color:P.bg, border:0, cursor:'pointer',
-        }}>Share with Maya</button>
+        }}>Share with Shari</button>
       </div>
     </div>
   );
@@ -654,13 +681,13 @@ function PRequestApprove({ go }) {
     <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:0, background:P.panel }}>
       <div style={{ padding:'10px 16px', display:'flex', alignItems:'center', gap:10, borderBottom:`.5px solid ${P.panelEdge}`, background:P.bg }}>
         <button onClick={() => go('shares')} style={iconBtnP}>{PI.close(20)}</button>
-        <div style={{ flex:1, fontSize:13.5, fontWeight:600 }}>Dr. Levin's request</div>
+        <div style={{ flex:1, fontSize:13.5, fontWeight:600 }}>Dr. Kaplan's request</div>
       </div>
       <div style={{ flex:1, overflow:'auto', padding:'18px 20px' }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:14 }}>
-          <div style={{ width:40, height:40, borderRadius:'50%', background:'#d4ecec', color:'#0d6e6e', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:600, fontSize:14 }}>ML</div>
+          <div style={{ width:40, height:40, borderRadius:'50%', background:'#d4ecec', color:'#0d6e6e', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:600, fontSize:14 }}>SK</div>
           <div>
-            <div style={{ fontSize:13.5, fontWeight:600 }}>Dr. Maya Levin</div>
+            <div style={{ fontSize:13.5, fontWeight:600 }}>Shari B. Kaplan, LCSW</div>
             <div style={{ fontSize:11, color:P.faint }}>Requested 22 min ago</div>
           </div>
         </div>
@@ -671,13 +698,13 @@ function PRequestApprove({ go }) {
         </div>
         <SectionLabel>What she's asking for</SectionLabel>
         <div style={{ background:'#fff', border:`.5px solid ${P.panelEdge}`, borderRadius:12, padding:'12px 14px', marginBottom:14 }}>
-          <ProfileRow k="Item" v="Maya conversation transcript · 02:14–02:36 May 3" />
+          <ProfileRow k="Item" v="Shari conversation transcript · 02:14–02:36 May 3" />
           <ProfileRow k="Scope" v="One-time view · auto-revokes after Tuesday's session" />
           <ProfileRow k="Why" v='"Helps me prepare"' last />
         </div>
         <div style={{ background:P.sageSoft, border:`.5px solid rgba(90,122,94,.18)`, borderRadius:12, padding:'10px 14px', display:'flex', gap:10, fontSize:12, color:P.fg, lineHeight:1.5 }}>
           {PI.lock(14)}
-          <div>Saying no is fine. Dr. Levin will see "declined" — nothing else.</div>
+          <div>Saying no is fine. Dr. Kaplan will see "declined" — nothing else.</div>
         </div>
       </div>
       <div style={{ padding:'12px 16px 16px', borderTop:`.5px solid ${P.panelEdge}`, background:P.bg, display:'flex', gap:8 }}>
@@ -698,8 +725,8 @@ function PRequestApprove({ go }) {
 function PNotifications({ go }) {
   const items = [
     { tone:'amber', title:'Two summaries ready to share', sub:'From last night & this morning · waiting on you', when:'30 min ago' },
-    { tone:'sage', title:'Café exposure window', sub:'Late afternoon today (you set this with Dr. Levin)', when:'in 6h' },
-    { tone:'neutral', title:'Maya updated your plan', sub:'Café scaled to late afternoon · approved Apr 28', when:'4d ago' },
+    { tone:'sage', title:'Café exposure window', sub:'Late afternoon today (you set this with Dr. Kaplan)', when:'in 6h' },
+    { tone:'neutral', title:'Shari updated your plan', sub:'Café scaled to late afternoon · approved Apr 28', when:'4d ago' },
     { tone:'neutral', title:'Morning grounding', sub:'5-min reminder · you said yes to this', when:'tomorrow 8:00' },
   ];
   return (
@@ -713,7 +740,7 @@ function PNotifications({ go }) {
           Nudges
         </h1>
         <div style={{ fontSize:12.5, color:P.muted, lineHeight:1.5 }}>
-          Only the ones you and Dr. Levin set up. Nothing chasing you.
+          Only the ones you and Dr. Kaplan set up. Nothing chasing you.
         </div>
       </div>
       <Anno n={12} top={20} right={4}>
@@ -771,12 +798,12 @@ function PSettings({ go }) {
           </div>
         ))}
       </div>
-      <SectionLabel>Maya's voice</SectionLabel>
+      <SectionLabel>Shari's voice</SectionLabel>
       <div style={{ background:P.panel, border:`.5px solid ${P.panelEdge}`, borderRadius:12, overflow:'hidden', marginBottom:14 }}>
         {[
-          ['Voice modeling', 'Off · Maya types only', false],
-          ['Persona name', 'Maya', null],
-          ['Tone', 'Warm-direct (Dr. Levin\'s default)', null],
+          ['Voice modeling', 'Off · Shari types only', false],
+          ['Persona name', 'Shari', null],
+          ['Tone', 'Warm-direct (Dr. Kaplan\'s default)', null],
         ].map(([k, v, on], i, arr) => (
           <div key={i} style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', borderBottom: i<arr.length-1?`.5px solid ${P.panelEdge}`:0 }}>
             <div style={{ flex:1 }}>
@@ -791,8 +818,8 @@ function PSettings({ go }) {
       <div style={{ background:P.panel, border:`.5px solid ${P.panelEdge}`, borderRadius:12, overflow:'hidden' }}>
         {[
           ['Conversations stay on this device', '', true],
-          ['Auto-summarize for share review', 'Maya drafts; you approve', true],
-          ['Allow Dr. Levin to request specific items', 'Each request needs your tap', true],
+          ['Auto-summarize for share review', 'Shari drafts; you approve', true],
+          ['Allow Dr. Kaplan to request specific items', 'Each request needs your tap', true],
         ].map(([k, v, on], i, arr) => (
           <div key={i} style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', borderBottom: i<arr.length-1?`.5px solid ${P.panelEdge}`:0 }}>
             <div style={{ flex:1 }}>
@@ -829,3 +856,127 @@ window.PShareReview = PShareReview;
 window.PRequestApprove = PRequestApprove;
 window.PNotifications = PNotifications;
 window.PSettings = PSettings;
+
+// ─── SHARI PROFILE (modal-style sheet) ───
+function PShariProfile({ go }) {
+  return (
+    <div style={{
+      position:'absolute', inset:0, background:'rgba(20, 12, 4, .35)',
+      display:'flex', alignItems:'flex-end', zIndex:50,
+      animation:'tend-fade .15s ease-out',
+    }}>
+      <style>{`@keyframes tend-fade { from { opacity:0; } } @keyframes tend-sheet { from { transform: translateY(40px); opacity:0; } }`}</style>
+      <div style={{
+        width:'100%', maxHeight:'94%', overflow:'auto',
+        background:P.bg, borderRadius:'24px 24px 0 0',
+        animation:'tend-sheet .25s ease-out',
+        paddingBottom:24,
+      }}>
+        {/* drag handle */}
+        <div style={{ display:'flex', justifyContent:'center', padding:'8px 0 0' }}>
+          <div style={{ width:40, height:4, borderRadius:2, background:'rgba(74,53,30,.18)' }} />
+        </div>
+        {/* close */}
+        <div style={{ display:'flex', justifyContent:'flex-end', padding:'4px 14px 0' }}>
+          <button onClick={() => go('chat')} style={{
+            width:32, height:32, borderRadius:'50%', border:0, background:P.panel,
+            color:P.muted, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center',
+          }}>{PI.close(16)}</button>
+        </div>
+
+        {/* hero */}
+        <div style={{ padding:'4px 24px 16px', textAlign:'center' }}>
+          <div style={{ display:'inline-block' }}>
+            <MayaMark size={84} ringed />
+          </div>
+          <h2 style={{
+            margin:'12px 0 2px', fontFamily:P.serif, fontWeight:400, fontSize:30,
+            letterSpacing:'-0.01em', fontStyle:'italic',
+          }}>Shari</h2>
+          <div style={{ fontSize:12, color:P.muted, lineHeight:1.5 }}>
+            Your between-visit companion · voice & manner of<br/>
+            <strong style={{ color:P.fg, fontWeight:600 }}>Shari B. Kaplan, LCSW</strong>
+          </div>
+        </div>
+
+        {/* What Shari is */}
+        <div style={{ padding:'0 20px' }}>
+          <div style={{
+            background:P.panel, border:`.5px solid ${P.panelEdge}`, borderRadius:14,
+            padding:'16px', marginBottom:12,
+          }}>
+            <div style={{ fontSize:11, color:P.faint, fontWeight:600, letterSpacing:'.06em', textTransform:'uppercase', marginBottom:8 }}>
+              What Shari is
+            </div>
+            <div style={{ fontFamily:P.serif, fontSize:17, lineHeight:1.45, color:P.fg, fontStyle:'italic', marginBottom:10 }}>
+              "I'm a voice clone of Dr. Kaplan, made with Delphi. She wrote what I'm allowed to do, and her voice is how I sound."
+            </div>
+            <div style={{ fontSize:13, color:P.muted, lineHeight:1.55 }}>
+              Shari is an AI. She works only inside the prescription Dr. Kaplan approved for you, and she hands off to a human for anything outside it.
+            </div>
+          </div>
+
+          {/* What she can / can't */}
+          <div style={{
+            background:'#fff', border:`.5px solid ${P.panelEdge}`, borderRadius:14,
+            padding:'14px 16px', marginBottom:12,
+          }}>
+            <div style={{ fontSize:11, color:P.faint, fontWeight:600, letterSpacing:'.06em', textTransform:'uppercase', marginBottom:10 }}>
+              Boundaries Dr. Kaplan set
+            </div>
+            <ShariBoundary tone="ok" label="Can guide you through grounding, breathing, exposure steps" />
+            <ShariBoundary tone="ok" label="Can talk through a hard moment at any hour" />
+            <ShariBoundary tone="ok" label="Can adjust today's plan within Dr. Kaplan's prescription" />
+            <ShariBoundary tone="bad" label="Won't start trauma-processing — that's reserved for sessions" last />
+            <ShariBoundary tone="bad" label="Hands off to a human for any crisis or SI ideation" last />
+          </div>
+
+          {/* Privacy */}
+          <div style={{
+            background:P.sageSoft, border:`.5px solid rgba(90,122,94,.18)`, borderRadius:14,
+            padding:'14px 16px', marginBottom:12,
+          }}>
+            <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:11, color:P.sage, fontWeight:600, letterSpacing:'.06em', textTransform:'uppercase', marginBottom:8 }}>
+              {PI.lock(11)} What Dr. Kaplan sees
+            </div>
+            <div style={{ fontSize:13, color:P.fg, lineHeight:1.55 }}>
+              Nothing leaves your phone unless you approve it. Conversations with Shari are yours. Dr. Kaplan only sees what you choose to share, on your schedule.
+            </div>
+          </div>
+
+          {/* Tech */}
+          <div style={{ padding:'4px 4px 12px', fontSize:11.5, color:P.faint, lineHeight:1.5, textAlign:'center' }}>
+            Voice clone & persona by <strong style={{ color:P.muted }}>Delphi</strong> · grounded in Dr. Kaplan's training notes & approved protocols. Always disclosed as AI.
+          </div>
+
+          <button onClick={() => go('chat')} style={{
+            width:'100%', height:46, borderRadius:12, fontSize:14, fontWeight:600,
+            background:P.fg, color:P.bg, border:0, cursor:'pointer',
+          }}>Back to conversation</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ShariBoundary({ tone, label, last = false }) {
+  const ok = tone === 'ok';
+  return (
+    <div style={{
+      display:'flex', alignItems:'flex-start', gap:10,
+      padding:'8px 0',
+      borderBottom: last ? 0 : `.5px solid ${P.panelEdge}`,
+    }}>
+      <div style={{
+        width:20, height:20, borderRadius:'50%', flexShrink:0, marginTop:1,
+        background: ok ? P.sageSoft : '#f6e1e1',
+        color: ok ? P.sage : P.bad,
+        display:'flex', alignItems:'center', justifyContent:'center',
+        fontSize:13, fontWeight:700,
+      }}>{ok ? '✓' : '×'}</div>
+      <div style={{ fontSize:13, color:P.fg, lineHeight:1.45, flex:1 }}>{label}</div>
+    </div>
+  );
+}
+
+window.PShariProfile = PShariProfile;

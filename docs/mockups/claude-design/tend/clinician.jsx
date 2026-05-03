@@ -48,7 +48,7 @@ function Pill({ tone='neutral', children, style }) {
   );
 }
 
-function Avatar({ initials, size=28, tone='slate' }) {
+function Avatar({ initials, size=28, tone='slate', photo }) {
   const tones = {
     slate:['#e2e8f0','#334155'],
     teal:['#d4ecec','#0d6e6e'],
@@ -60,6 +60,15 @@ function Avatar({ initials, size=28, tone='slate' }) {
     stone:['#e7e5e4','#44403c'],
   };
   const [bg, fg] = tones[tone] || tones.slate;
+  if (photo) {
+    return (
+      <div style={{
+        width:size, height:size, borderRadius:'50%',
+        backgroundImage:`url(${photo})`, backgroundSize:'cover', backgroundPosition:'center 20%',
+        flexShrink:0, border:`.5px solid ${C.border}`,
+      }} />
+    );
+  }
   return (
     <div style={{
       width:size, height:size, borderRadius:'50%', background:bg, color:fg,
@@ -71,8 +80,8 @@ function Avatar({ initials, size=28, tone='slate' }) {
 }
 
 const TONE_BY_PATIENT = {
-  chen:'teal', noa:'violet', amir:'blue', lior:'amber',
-  tamar:'rose', yair:'green', rinat:'stone', eden:'slate',
+  chen:'teal', rachel:'violet', marcus:'blue', tyler:'amber',
+  jenna:'rose', devon:'green', paige:'stone', ethan:'slate',
 };
 
 // Sparkline-ish 14-day adherence bar
@@ -116,7 +125,14 @@ const I = {
 // ───────────────── shell ─────────────────
 
 function ClinicianApp() {
-  const [route, setRoute] = React.useState('dashboard');
+  const initialRoute = (() => {
+    try {
+      const r = new URLSearchParams(window.location.search).get('route');
+      const valid = ['dashboard','patient','prescribe','shares','context'];
+      return valid.includes(r) ? r : 'dashboard';
+    } catch (e) { return 'dashboard'; }
+  })();
+  const [route, setRoute] = React.useState(initialRoute);
   // route: 'dashboard' | 'patient' | 'prescribe' | 'shares' | 'context'
   const [filter, setFilter] = React.useState('all');
 
@@ -143,6 +159,8 @@ function ClinicianApp() {
           {route === 'context'   && <ContextSharing onBack={() => setRoute('patient')} />}
         </div>
       </div>
+      <CrossTooltip target="clinician" onAction={(a) => a && a.route && setRoute(a.route)} />
+      <LocalToast />
     </div>
   );
 }
@@ -150,11 +168,14 @@ function ClinicianApp() {
 // ───────────────── sidebar / topbar ─────────────────
 
 function Sidebar({ route, setRoute }) {
-  const NavItem = ({ id, label, count }) => {
+  const [profileOpen, setProfileOpen] = React.useState(false);
+  const NavItem = ({ id, label, count, dataAttr }) => {
     const active = route === id;
+    const extra = dataAttr ? { [dataAttr]: '' } : {};
     return (
       <button
         onClick={() => setRoute(id)}
+        {...extra}
         style={{
           display:'flex', alignItems:'center', justifyContent:'space-between',
           width:'100%', padding:'7px 10px', borderRadius:6,
@@ -190,24 +211,36 @@ function Sidebar({ route, setRoute }) {
       <div style={{ display:'flex', flexDirection:'column', gap:1 }}>
         <NavLabel>Workspace</NavLabel>
         <NavItem id="dashboard" label="Patients" count={8} />
-        <NavItem id="shares"    label="Inbox · shares" count={2} />
+        <NavItem id="shares"    label="Inbox · shares" count={2} dataAttr="data-shares-nav" />
       </div>
 
       <div style={{ display:'flex', flexDirection:'column', gap:1 }}>
         <NavLabel>Today</NavLabel>
         <SidebarSession when="10:00" who="Chen Avraham" active={route==='patient'} />
-        <SidebarSession when="14:30" who="Noa Friedman" />
-        <SidebarSession when="16:00" who="Tamar Sela" />
+        <SidebarSession when="14:30" who="Rachel Bennett" />
+        <SidebarSession when="16:00" who="Jenna Reed" />
       </div>
 
-      <div style={{ marginTop:'auto', padding:'10px 8px',
-                    borderTop:`.5px solid ${C.border}`,
-                    display:'flex', alignItems:'center', gap:9 }}>
-        <Avatar initials="ML" size={28} tone="teal" />
-        <div style={{ minWidth:0 }}>
-          <div style={{ fontSize:12, fontWeight:600, lineHeight:1.2 }}>Dr. Maya Levin</div>
-          <div style={{ fontSize:10.5, color:C.faint }}>Clinical Psychologist</div>
-        </div>
+      <div style={{ marginTop:'auto', position:'relative' }}>
+        {profileOpen && <ClinicianProfilePopover onClose={() => setProfileOpen(false)} />}
+        <button
+          onClick={() => setProfileOpen(o => !o)}
+          data-clinician-profile
+          style={{
+            width:'100%', padding:'10px 8px',
+            borderTop:`.5px solid ${C.border}`,
+            display:'flex', alignItems:'center', gap:9,
+            background: profileOpen ? '#fff' : 'transparent',
+            border:0, borderTop:`.5px solid ${C.border}`,
+            cursor:'pointer', textAlign:'left',
+          }}>
+          <Avatar size={28} photo={CLINICIAN.photo} />
+          <div style={{ minWidth:0, flex:1 }}>
+            <div style={{ fontSize:12, fontWeight:600, lineHeight:1.2 }}>{CLINICIAN.shortName}</div>
+            <div style={{ fontSize:10.5, color:C.faint }}>LCSW · Trauma & PTSD</div>
+          </div>
+          <span style={{ fontSize:9, color:C.faint }}>⋯</span>
+        </button>
       </div>
     </aside>
   );
@@ -221,6 +254,96 @@ function NavLabel({ children }) {
     }}>{children}</div>
   );
 }
+
+function ClinicianProfilePopover({ onClose }) {
+  // Pop up above the avatar button. Positioned absolute within the wrapping container.
+  return (
+    <>
+      <div onClick={onClose} style={{
+        position:'fixed', inset:0, zIndex:40,
+      }} />
+      <div style={{
+        position:'absolute', bottom:'calc(100% + 6px)', left:8, right:8,
+        background:'#fff', border:`.5px solid ${C.border}`,
+        borderRadius:10, boxShadow:'0 12px 36px rgba(15,23,42,.18)',
+        padding:'14px', zIndex:41,
+        animation:'tend-pop .15s ease-out',
+      }}>
+        <style>{`@keyframes tend-pop { from { opacity:0; transform: translateY(4px); } }`}</style>
+        <div style={{ display:'flex', gap:10, alignItems:'center', marginBottom:10 }}>
+          <Avatar size={42} photo={CLINICIAN.photo} />
+          <div style={{ minWidth:0, flex:1 }}>
+            <div style={{ fontSize:13, fontWeight:600, lineHeight:1.2 }}>{CLINICIAN.name}</div>
+            <div style={{ fontSize:11, color:C.muted, marginTop:2 }}>{CLINICIAN.title}</div>
+          </div>
+        </div>
+
+        {/* Voice clone block */}
+        <div style={{
+          background:'#f4f1ec', border:`.5px solid ${C.border}`, borderRadius:8,
+          padding:'10px 12px', marginBottom:10,
+        }}>
+          <div style={{ fontSize:9.5, color:C.faint, fontWeight:600, letterSpacing:'.08em', textTransform:'uppercase', marginBottom:4 }}>
+            Your voice clone · powered by Delphi
+          </div>
+          <div style={{ fontSize:11.5, color:C.fg, lineHeight:1.5 }}>
+            Patients meet <b>Shari</b>, an AI in your voice and manner. She runs only inside the protocols you've approved, never starts trauma processing, and hands off to you on any escalation.
+          </div>
+          <div style={{ display:'flex', gap:6, marginTop:8 }}>
+            <button style={popBtn}>Manage voice & persona</button>
+            <button style={popBtnGhost}>Listen to a sample</button>
+          </div>
+        </div>
+
+        {/* Quick stats */}
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginBottom:10 }}>
+          <ProfileStat label="Active patients" value="24" />
+          <ProfileStat label="Between-visit hrs / wk" value="11.5" />
+        </div>
+
+        {/* Menu */}
+        <div style={{ display:'flex', flexDirection:'column', borderTop:`.5px solid ${C.border}`, margin:'0 -14px -14px', padding:'4px 0' }}>
+          <ProfileMenu label="Caseload settings" />
+          <ProfileMenu label="Notification rules" />
+          <ProfileMenu label="Billing & payouts" />
+          <ProfileMenu label="Sign out" tone="danger" />
+        </div>
+      </div>
+    </>
+  );
+}
+
+const popBtn = {
+  fontSize:11, fontWeight:600, padding:'5px 9px', borderRadius:5,
+  background:'#1c1917', color:'#fff', border:0, cursor:'pointer',
+};
+const popBtnGhost = {
+  fontSize:11, fontWeight:500, padding:'5px 9px', borderRadius:5,
+  background:'#fff', color:'#1c1917', border:`.5px solid ${C.border}`, cursor:'pointer',
+};
+
+function ProfileStat({ label, value }) {
+  return (
+    <div style={{ background:'#fff', border:`.5px solid ${C.border}`, borderRadius:8, padding:'8px 10px' }}>
+      <div style={{ fontSize:9.5, color:C.faint, fontWeight:600, letterSpacing:'.08em', textTransform:'uppercase' }}>{label}</div>
+      <div style={{ fontSize:18, fontWeight:600, marginTop:2, fontVariantNumeric:'tabular-nums' }}>{value}</div>
+    </div>
+  );
+}
+
+function ProfileMenu({ label, tone }) {
+  return (
+    <button style={{
+      background:'transparent', border:0, padding:'8px 14px', textAlign:'left',
+      fontSize:12, color: tone==='danger' ? '#9f3a3a' : C.fg, cursor:'pointer',
+    }}>{label}</button>
+  );
+}
+
+function NavLabelDUPE_REMOVE({ children }) {
+  return null;
+}
+
 
 function SidebarSession({ when, who, active }) {
   return (
@@ -321,7 +444,7 @@ function Dashboard({ filter, setFilter, onPatient, adherenceMode }) {
     filter === 'all' ? true :
     filter === 'attention' ? p.status === 'attention' :
     filter === 'pre-session' ? ['chen','noa','tamar'].includes(p.id) :
-    filter === 'no-engagement' ? (p.id === 'lior') :
+    filter === 'no-engagement' ? (p.id === 'tyler') :
     true
   );
 
@@ -515,7 +638,7 @@ function PatientDetail({ onPrescribe, onBack, adherenceMode }) {
             ['adherence','Adherence'],
             ['shares','Shares from Chen'],
             ['conversations','Conversations'],
-            ['context','Context shared with Maya'],
+            ['context','Context shared with Shari'],
           ].map(([k, label]) => (
             <button key={k} onClick={() => setTab(k)} style={{
               padding:'8px 12px', fontSize:12, fontWeight: tab===k ? 600 : 500,
@@ -571,7 +694,7 @@ function OverviewTab({ adherenceMode, onPrescribe }) {
 
         <Card title="Pre-session note draft" right={<Pill tone="accent">{I.sparkles(11)} AI</Pill>}>
           <div style={{ fontSize:13, color:C.fg, lineHeight:1.6 }}>
-            Since last session, Chen completed <b>2 of 4</b> imaginal exposures and skipped both in-vivo café exposures. Sleep dropped on 4 of 7 nights (avg 4.2h). He shared <b>2 nighttime episodes</b>, both around 02:00, with grounding partially effective. He <i>declined</i> Maya's guidance on one of them — flagged as a deliberate choice consistent with his stated preference to "handle some on my own."
+            Since last session, Chen completed <b>2 of 4</b> imaginal exposures and skipped both in-vivo café exposures. Sleep dropped on 4 of 7 nights (avg 4.2h). He shared <b>2 nighttime episodes</b>, both around 02:00, with grounding partially effective. He <i>declined</i> Shari's guidance on one of them — flagged as a deliberate choice consistent with his stated preference to "handle some on my own."
             <div style={{ marginTop:10, paddingTop:10, borderTop:`.5px dashed ${C.border}`, color:C.muted, fontSize:12 }}>
               Suggested for the session: review what made the second imaginal exposure feel doable; revisit in-vivo step (consider scaling down to a quieter time).
             </div>
@@ -611,7 +734,7 @@ function OverviewTab({ adherenceMode, onPrescribe }) {
 
         <Card title="Pending share requests" right={<Pill tone="warn">{PENDING_SHARES.length} waiting on Chen</Pill>}>
           <div style={{ fontSize:12.5, color:C.muted, lineHeight:1.55 }}>
-            Maya's app generated {PENDING_SHARES.length} share summaries. Chen will see them next time he opens the app and decide what to send up.
+            Shari's app generated {PENDING_SHARES.length} share summaries. Chen will see them next time he opens the app and decide what to send up.
           </div>
         </Card>
       </div>
@@ -720,7 +843,7 @@ function PrescriptionTab({ onEdit }) {
       </Card>
 
       <div style={{ height:14 }} />
-      <Card title="Escalation thresholds" right={<Pill tone="bad">Auto-notify Maya</Pill>}>
+      <Card title="Escalation thresholds" right={<Pill tone="bad">Auto-notify Shari</Pill>}>
         {PRESCRIPTION.escalation.map((e, i) => (
           <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:8, padding:'6px 0', fontSize:12.5, color:C.fg, lineHeight:1.5 }}>
             <span style={{ color:C.bad, marginTop:5 }}>{I.dot()}</span> {e}
@@ -886,12 +1009,12 @@ function ContextTab() {
         <strong>Context flows the other way too.</strong> This is the explicit surface for what the clinician shared <em>down</em> to Chen's device — for personalization. Symmetric to the share-up flow.
       </Anno>
       <div style={{ marginBottom:12, fontSize:12.5, color:C.muted, lineHeight:1.55 }}>
-        What you've shared <em>down</em> to Chen's app. The on-device Maya uses only this — nothing else.
+        What you've shared <em>down</em> to Chen's app. The on-device Shari uses only this — nothing else.
       </div>
       <Card title="Persona settings">
-        <Row label="Persona name" value="Maya" />
+        <Row label="Persona name" value="Shari (your first name)" />
         <Row label="Tone" value="Warm-direct (your default)" />
-        <Row label="Voice modeling" value="Off (Chen has not opted in)" />
+        <Row label="Voice modeling" value={<span><b>Powered by Delphi</b> · ready, awaiting Chen's opt-in</span>} />
         <Row label="Allowed scope" value="Prescription guidance, grounding, in-the-moment de-escalation" />
         <Row label="Out of scope" value="Trauma processing, medication advice, crisis (hands off to human)" last />
       </Card>

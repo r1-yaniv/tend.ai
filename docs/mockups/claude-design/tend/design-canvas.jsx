@@ -81,6 +81,13 @@ function DesignCanvas({ children, minScale, maxScale, style }) {
 
   React.useEffect(() => {
     let off = false;
+    // file:// origins reject relative fetch — guard so we don't hang `ready`.
+    const isFile = typeof location !== 'undefined' && location.protocol === 'file:';
+    if (isFile) {
+      didRead.current = true;
+      setReady(true);
+      return () => { off = true; };
+    }
     fetch('./' + DC_STATE_FILE)
       .then((r) => (r.ok ? r.json() : null))
       .then((saved) => {

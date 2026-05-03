@@ -20,7 +20,7 @@ function PrescriptionAuthoring({ onBack }) {
   return (
     <div style={{ padding:'18px 22px 28px', position:'relative' }}>
       <Anno n={1} top={20} right={20}>
-        <strong>AI drafts, clinician approves.</strong> The prescription is the contract for everything between visits. Maya can upload her own notes, accept the draft, edit any task, then sign off. Final approval is always hers.
+        <strong>AI drafts, clinician approves.</strong> The prescription is the contract for everything between visits. Shari can upload her own notes, accept the draft, edit any task, then sign off. Final approval is always hers.
       </Anno>
 
       <Stepper step={step} steps={['Session notes','AI draft & edit','Review & approve']} />
@@ -87,7 +87,7 @@ Plan:
 - Sleep window 23:30–06:30; phone out of room.
 - Morning grounding + 1-line log daily.
 - Cut caffeine after 14:00.
-- Maya (AI) may guide grounding and exposure. No trauma processing. Crisis → human protocol.
+- Shari (AI) may guide grounding and exposure. No trauma processing. Crisis → human protocol.
 - Notify if SUDS sustained ≥8 for >30min during exposure, or two consecutive nights <4h sleep.
 
 Risk: No SI ideation reported. Patient denied passive thoughts. Continue weekly check on this.`;
@@ -95,7 +95,7 @@ Risk: No SI ideation reported. Patient denied passive thoughts. Continue weekly 
 const AI_DRAFT = {
   protocol: 'Prolonged Exposure + sleep stabilization',
   tasks: [
-    { id:'imag-exp', title:'Imaginal exposure recording', cadence:'4× / week', duration:'~30 min', detail:'Listen to recorded narrative. SUDS log before/after. Maya can guide if SUDS ≥7.', type:'exposure', source:'session-notes' },
+    { id:'imag-exp', title:'Imaginal exposure recording', cadence:'4× / week', duration:'~30 min', detail:'Listen to recorded narrative. SUDS log before/after. Shari can guide if SUDS ≥7.', type:'exposure', source:'session-notes' },
     { id:'in-vivo', title:'In-vivo exposure: Café Albert', cadence:'Mon, Thu', duration:'20 min', detail:'Late afternoon (scaled down). Stay until SUDS drops by 50%.', type:'exposure', source:'session-notes' },
     { id:'sleep', title:'Sleep window 23:30 – 06:30', cadence:'nightly', duration:'7h', detail:'No screens after 22:30. Phone out of room. If awake >20 min, get out of bed.', type:'continuous', source:'session-notes' },
     { id:'journal', title:'Morning grounding + log', cadence:'daily', duration:'5 min', detail:'3-2-1 grounding, then one line on last night.', type:'continuous', source:'session-notes' },
@@ -144,7 +144,7 @@ function UploadStep({ notes, setNotes, onGenerate, thinking }) {
         <ChecklistItem text="Continuous behaviors (sleep window, caffeine cut-off)" />
         <ChecklistItem text="Constraints (no alcohol while titrating)" />
         <ChecklistItem text="Escalation thresholds (when to ping you)" />
-        <ChecklistItem text="AI assistance level — what Maya may guide on, and where she hands off" />
+        <ChecklistItem text="AI assistance level — what Shari may guide on, and where she hands off" />
         <div style={{ marginTop:12, padding:'10px 12px', background:'#f8fafc', borderRadius:7, border:`.5px solid ${C.border}`, fontSize:11.5, color:C.muted, display:'flex', gap:8 }}>
           {I.shield(13)}
           <div>You will edit every field before signing. Tend never sends a prescription Chen-side without your approval.</div>
@@ -227,7 +227,7 @@ function DraftStep({ draft, setDraft, onBack, onNext }) {
           ))}
         </Card>
 
-        <Card title="Escalation thresholds" right={<Pill tone="bad">Auto-notify Maya</Pill>}>
+        <Card title="Escalation thresholds" right={<Pill tone="bad">Auto-notify Shari</Pill>}>
           {draft.escalation.map((e, i) => (
             <div key={e.id} style={{ display:'flex', alignItems:'center', gap:10, padding:'7px 0' }}>
               <span style={{ color:C.bad }}>{I.dot()}</span>
@@ -257,7 +257,7 @@ function DraftStep({ draft, setDraft, onBack, onNext }) {
           <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 0', borderTop:`.5px solid ${C.border}` }}>
             <input type="checkbox" checked={draft.ai.crisisGuidance} onChange={e => setDraft({...draft, ai:{...draft.ai, crisisGuidance:e.target.checked}})} style={{ marginTop:2 }} />
             <div>
-              <div style={{ fontSize:12.5, fontWeight:500 }}>Allow Maya to guide through crisis</div>
+              <div style={{ fontSize:12.5, fontWeight:500 }}>Allow Shari to guide through crisis</div>
               <div style={{ fontSize:11.5, color:C.muted, marginTop:2, lineHeight:1.5 }}>
                 Off (recommended for Chen): AI hands off to human protocol on any SI mention.
               </div>
@@ -301,6 +301,30 @@ function Diff({ op, text, muted }) {
 
 function ApproveStep({ draft, onBack, onApprove }) {
   const [signed, setSigned] = React.useState(false);
+  const handleApprove = () => {
+    const planHint = {
+      target:'patient',
+      anchor:'[data-plan-header]',
+      title:'Dr. Kaplan updated your plan',
+      body:'A new prescription is here. Tap any task to see what changed, or open Shari to talk through it.',
+      action:{ label:'Talk to Shari', route:'chat' },
+    };
+    if (window.tendBus) {
+      window.tendBus.emit('rx-approved', { version:'v4' });
+      window.tendBus.postHint(planHint);
+    }
+    if (window.tendToast) {
+      window.tendToast({
+        tone:'success',
+        title:'Prescription v4 approved',
+        body:'Chen will see the update next time he opens Tend. Want to see how it lands?',
+        linkLabel:'Open Chen\'s phone',
+        linkHref:'Patient.html?route=prescriptions',
+        hint: planHint,
+      });
+    }
+    onApprove();
+  };
   return (
     <div style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr', gap:16 }}>
       <Card title="Final prescription · v4 (pending)">
@@ -330,10 +354,10 @@ function ApproveStep({ draft, onBack, onApprove }) {
           <div style={{ padding:'14px 12px', background:'#f8fafc', borderRadius:7, border:`.5px solid ${C.border}` }}>
             <div style={{ fontSize:11.5, color:C.faint, marginBottom:6 }}>Approver</div>
             <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-              <Avatar initials="ML" size={28} tone="teal" />
+              <Avatar size={28} photo={CLINICIAN.photo} />
               <div>
-                <div style={{ fontSize:13, fontWeight:600 }}>Dr. Maya Levin</div>
-                <div style={{ fontSize:11.5, color:C.faint }}>License IL-PSY-08842</div>
+                <div style={{ fontSize:13, fontWeight:600 }}>{CLINICIAN.name}</div>
+                <div style={{ fontSize:11.5, color:C.faint }}>License FL-SW-49213</div>
               </div>
             </div>
             <label style={{ display:'flex', alignItems:'flex-start', gap:8, marginTop:12, fontSize:12, color:C.fg, cursor:'pointer' }}>
@@ -343,7 +367,7 @@ function ApproveStep({ draft, onBack, onApprove }) {
           </div>
           <div style={{ display:'flex', gap:8, marginTop:14 }}>
             <button onClick={onBack} style={{ ...ghostBtn, flex:1, height:36 }}>Back</button>
-            <button onClick={onApprove} disabled={!signed} style={{
+            <button onClick={handleApprove} disabled={!signed} style={{
               flex:2, height:36, borderRadius:7, fontSize:13, fontWeight:600,
               background: signed ? C.accent : '#cbd5e1', color:'#fff', border:0, cursor: signed?'pointer':'not-allowed',
               display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6,
@@ -353,7 +377,7 @@ function ApproveStep({ draft, onBack, onApprove }) {
         <Card title="What Chen will see">
           <div style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'10px 12px', background:'#fdf6ec', borderRadius:7, fontSize:12.5, color:'#5a4a2a', lineHeight:1.5 }}>
             <span style={{ fontSize:18 }}>·</span>
-            <div>"Hey Chen — Maya updated your plan after Tuesday's session. Café exposure moved to late afternoon. Want a quick walk-through?"</div>
+            <div>"Hey Chen — Shari updated your plan after Tuesday's session. Café exposure moved to late afternoon. Want a quick walk-through?"</div>
           </div>
         </Card>
       </div>
@@ -383,12 +407,12 @@ function SharesInbox({ onBack }) {
       <div style={{ display:'grid', gridTemplateColumns:'1fr', gap:10, maxWidth:880 }}>
         {[
           { who:'Chen Avraham', tone:'teal', when:'2h ago', kind:'episode',
-            summary:'Episode at 02:14 last night · ~22 min', detail:'Used 3-2-1 grounding (partial). Declined Maya\'s help mid-way. Final SUDS: 5.', urgent:true },
+            summary:'Episode at 02:14 last night · ~22 min', detail:'Used 3-2-1 grounding (partial). Declined Shari\'s help mid-way. Final SUDS: 5.', urgent:true },
           { who:'Chen Avraham', tone:'teal', when:'5h ago', kind:'adherence',
             summary:'In-vivo exposure: skipped Mon', detail:'Reason: "couldn\'t leave the apartment today"' },
-          { who:'Lior Bar-On', tone:'amber', when:'1d ago', kind:'mood',
+          { who:'Tyler Brooks', tone:'amber', when:'1d ago', kind:'mood',
             summary:'Morning check-in: mood 2/10', detail:'No journal entry. Auto-nudge sent.' },
-          { who:'Tamar Sela', tone:'rose', when:'1d ago', kind:'adherence',
+          { who:'Jenna Reed', tone:'rose', when:'1d ago', kind:'adherence',
             summary:'Interoceptive exposure complete', detail:'3rd this week. SUDS resolved within 6 min.' },
         ].map((s, i) => (
           <div key={i} style={{

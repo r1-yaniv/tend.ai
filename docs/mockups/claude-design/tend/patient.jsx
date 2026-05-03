@@ -1,6 +1,6 @@
 // patient.jsx — Tend patient mobile app
 // Aesthetic: warm, journal-like. Cream background, soft sage accent,
-// serif for moments that feel personal (Maya's voice, prompts), sans for UI.
+// serif for moments that feel personal (Shari's voice, prompts), sans for UI.
 
 const P = {
   font: '"Inter", system-ui, -apple-system, sans-serif',
@@ -14,7 +14,7 @@ const P = {
   fg: '#2a221b',
   muted: '#6b5b4a',
   faint: '#a89580',
-  // Soft sage accent (Maya)
+  // Soft sage accent (Shari)
   sage: '#5a7a5e',
   sageSoft: '#e3ebe1',
   sageMid: '#a8bca7',
@@ -63,8 +63,16 @@ const PI = {
 
 // ─── shell ───
 function PatientApp() {
-  const [route, setRoute] = React.useState('home');
-  // home | chat | prescriptions | adherence | profile | shares | shareOne | settings | notifications | requestApprove
+  // Allow ?route=... to deep-link from a toast on the other side.
+  const initialRoute = (() => {
+    try {
+      const r = new URLSearchParams(window.location.search).get('route');
+      const valid = ['home','chat','prescriptions','adherence','profile','shari','shares','shareOne','settings','notifications','requestApprove'];
+      return valid.includes(r) ? r : 'home';
+    } catch (e) { return 'home'; }
+  })();
+  const [route, setRoute] = React.useState(initialRoute);
+  // home | chat | prescriptions | adherence | profile | shari | shares | shareOne | settings | notifications | requestApprove
   const [pendingShare, setPendingShare] = React.useState(0);
 
   const adherenceMode = window.__TEND_ADHERENCE || 'real';
@@ -86,13 +94,16 @@ function PatientApp() {
         {route === 'prescriptions' && <PPrescriptions go={go} />}
         {route === 'adherence' && <PAdherence go={go} adherenceMode={adherenceMode} />}
         {route === 'profile' && <PProfile go={go} />}
+        {route === 'shari' && <PShariProfile go={go} />}
         {route === 'shares' && <PShares go={go} />}
         {route === 'shareOne' && <PShareReview go={go} idx={pendingShare} />}
         {route === 'settings' && <PSettings go={go} />}
         {route === 'notifications' && <PNotifications go={go} />}
         {route === 'requestApprove' && <PRequestApprove go={go} />}
       </div>
-      {!['chat','shareOne','requestApprove'].includes(route) && (
+      <CrossTooltip target="patient" onAction={(a) => a && a.route && go(a.route)} />
+      <LocalToast />
+      {!['chat','shareOne','requestApprove','shari'].includes(route) && (
         <PTabBar route={route} go={go} />
       )}
     </div>
@@ -118,7 +129,7 @@ function PStatusBar() {
 function PTabBar({ route, go }) {
   const tabs = [
     { id:'home',  label:'Today',  icon: home => <svg width="18" height="18" viewBox="0 0 24 24" fill={home?'currentColor':'none'} stroke="currentColor" strokeWidth="1.6"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-7H10v7H5a1 1 0 0 1-1-1v-9z"/></svg> },
-    { id:'chat',  label:'Maya',   icon: home => <svg width="18" height="18" viewBox="0 0 24 24" fill={home?'currentColor':'none'} stroke="currentColor" strokeWidth="1.6"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-4 4v-4H6a2 2 0 0 1-2-2V6z"/></svg> },
+    { id:'chat',  label:'Shari',   icon: home => <svg width="18" height="18" viewBox="0 0 24 24" fill={home?'currentColor':'none'} stroke="currentColor" strokeWidth="1.6"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7l-4 4v-4H6a2 2 0 0 1-2-2V6z"/></svg> },
     { id:'prescriptions', label:'Plan', icon: home => <svg width="18" height="18" viewBox="0 0 24 24" fill={home?'currentColor':'none'} stroke="currentColor" strokeWidth="1.6"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg> },
     { id:'profile', label:'You',  icon: home => <svg width="18" height="18" viewBox="0 0 24 24" fill={home?'currentColor':'none'} stroke="currentColor" strokeWidth="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg> },
   ];
@@ -163,7 +174,7 @@ function PHome({ go, adherenceMode }) {
   return (
     <div style={{ flex:1, overflow:'auto', padding:'8px 20px 20px', position:'relative' }}>
       <Anno n={6} top={20} right={10}>
-        <strong>Pull-first home.</strong> No streaks, no points. Just today's plan and what Chen feels like attending to. Maya is one tap away but doesn't push notifications unless he asked her to.
+        <strong>Pull-first home.</strong> No streaks, no points. Just today's plan and what Chen feels like attending to. Shari is one tap away but doesn't push notifications unless he asked her to.
       </Anno>
 
       {/* Header */}
@@ -194,10 +205,10 @@ function PHome({ go, adherenceMode }) {
         boxShadow:'0 1px 0 rgba(74,53,30,.04)',
       }}>
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-          <PPill tone="amber">{PI.share(11)} 2 things ready to share with Maya</PPill>
+          <PPill tone="amber">{PI.share(11)} 2 things ready to share with Shari</PPill>
         </div>
         <div style={{ fontSize:13.5, color:P.fg, lineHeight:1.5, marginBottom:10 }}>
-          Tend prepared summaries from last night and this morning. Nothing has left your phone yet — review what you'd like Maya to see.
+          Tend prepared summaries from last night and this morning. Nothing has left your phone yet — review what you'd like Shari to see.
         </div>
         <button onClick={() => go('shares')} style={{
           width:'100%', height:38, borderRadius:8, fontSize:13, fontWeight:600,
@@ -206,15 +217,15 @@ function PHome({ go, adherenceMode }) {
         }}>Review {PI.arrow(13)}</button>
       </div>
 
-      {/* Maya, the companion (subtle) */}
+      {/* Shari, the companion (subtle) */}
       <div onClick={() => go('chat')} style={{
         display:'flex', gap:12, alignItems:'center',
         background:P.sageSoft, border:`.5px solid rgba(90,122,94,.18)`, borderRadius:14,
         padding:'14px', marginBottom:18, cursor:'pointer',
-      }}>
-        <MayaMark size={42} />
+      }} data-shari-card>
+        <MayaMark size={42} ringed onClick={(e) => { e.stopPropagation(); go('shari'); }} />
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:11.5, color:P.sage, fontWeight:600, letterSpacing:'.02em' }}>MAYA · YOUR COMPANION</div>
+          <div style={{ fontSize:11.5, color:P.sage, fontWeight:600, letterSpacing:'.02em' }}>SHARI · YOUR COMPANION</div>
           <div style={{ fontFamily:P.serif, fontSize:17, lineHeight:1.3, marginTop:2, fontStyle:'italic', color:P.fg }}>
             "Whenever you're ready — I'm here."
           </div>
@@ -231,7 +242,7 @@ function PHome({ go, adherenceMode }) {
         <button onClick={() => go('prescriptions')} style={{
           background:'transparent', border:0, color:P.muted, cursor:'pointer',
           fontSize:12.5, padding:'6px 0', textAlign:'left',
-        }}>See full plan from Maya →</button>
+        }}>See full plan from Shari →</button>
       </div>
 
       {/* Quick check-in */}
@@ -299,16 +310,27 @@ function TodayItem({ item, onOpen }) {
   );
 }
 
-function MayaMark({ size = 36 }) {
-  return (
+function MayaMark({ size = 36, ringed = false, onClick = null }) {
+  // Shari's photo (the patient-facing AI uses her voice clone + likeness).
+  // Wrapped in a soft sage ring when `ringed` is set so it reads as "the AI version".
+  const inner = (
     <div style={{
       width:size, height:size, borderRadius:'50%',
-      background: 'radial-gradient(circle at 30% 30%, #b9d0bb, #6f8d72 70%)',
-      display:'flex', alignItems:'center', justifyContent:'center',
-      color:'#fff', fontFamily:P.serif, fontSize:Math.round(size*0.5), fontStyle:'italic',
+      backgroundImage: 'url(shari.png)',
+      backgroundSize:'cover', backgroundPosition:'center 18%',
+      backgroundColor:'#cfdcce',
       flexShrink:0,
-      boxShadow:'inset 0 -2px 4px rgba(0,0,0,.1), inset 0 1px 1px rgba(255,255,255,.3)',
-    }}>m</div>
+      boxShadow:'inset 0 0 0 .5px rgba(0,0,0,.18)',
+    }} />
+  );
+  if (!ringed && !onClick) return inner;
+  return (
+    <button onClick={onClick} style={{
+      padding: ringed ? 2 : 0, borderRadius:'50%',
+      background: ringed ? 'linear-gradient(140deg, #a8bca7, #6f8d72)' : 'transparent',
+      border:0, cursor: onClick ? 'pointer' : 'default',
+      flexShrink:0,
+    }}>{inner}</button>
   );
 }
 

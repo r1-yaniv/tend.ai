@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tend — print</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    background: #f0eee9;
+    color: #1a1715;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  * { box-sizing: border-box; }
+  button { font-family: inherit; }
+
+  .page {
+    background: #f0eee9;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    page-break-after: always;
+    break-after: page;
+    break-inside: avoid;
+  }
+  .page:last-child { page-break-after: auto; break-after: auto; }
+  .page-title {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto 14px;
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: 22px;
+    color: #2a221b;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .page-title .meta {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b5b4a;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+
+  .clin-frame {
+    width: 1280px;
+    height: 820px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 32px rgba(0,0,0,.08);
+    background: #fff;
+  }
+  .phone-frame {
+    width: 390px;
+    height: 820px;
+    background: #1a1715;
+    padding: 10px;
+    border-radius: 36px;
+    box-shadow: 0 12px 36px rgba(0,0,0,.18);
+    display: flex;
+  }
+  .phone-frame > .phone-inner {
+    flex: 1;
+    border-radius: 28px;
+    overflow: hidden;
+    background: #f6f1e8;
+    position: relative;
+  }
+  .phones-row {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .phone-cap {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b5b4a;
+    margin-top: 8px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .phone-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Hide tweaks panel + annotations in print version */
+  .twk-panel { display: none !important; }
+
+  @page { size: 1340px 920px; margin: 0; }
+  @media print {
+    body { background: #f0eee9; }
+    .page { padding: 24px 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="clinician-mount"></div>
+<div id="patient-home-mount"></div>
+<div id="patient-chat-mount"></div>
+<div id="patient-plan-mount"></div>
+<div id="patient-adherence-mount"></div>
+<div id="patient-shares-mount"></div>
+<div id="patient-share-review-mount"></div>
+<div id="patient-profile-mount"></div>
+<div id="clinician-prescribe-mount"></div>
+<div id="clinician-shares-mount"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="data.jsx"></script>
+<script type="text/babel" src="annotations.jsx"></script>
+<script type="text/babel" src="clinician.jsx"></script>
+<script type="text/babel" src="prescribe.jsx"></script>
+<script type="text/babel" src="patient.jsx"></script>
+<script type="text/babel" src="patient-screens.jsx"></script>
+
+<script type="text/babel">
+// Forced-route variants of the apps for print pages.
+window.__TEND_ANNOTATIONS = false;
+window.__TEND_ADHERENCE = 'real';
+
+function ClinicianPrintWith({ initialRoute = 'dashboard' }) {
+  // Reuse the inner render structure of ClinicianApp by overriding initial route.
+  // The original component owns its own state, so we do a tiny copy here.
+  const [route, setRoute] = React.useState(initialRoute);
+  const [filter, setFilter] = React.useState('all');
+  const adherenceMode = 'real';
+  return (
+    <div style={{
+      width:'100%', height:'100%', display:'flex',
+      background:'#f7f7f5', color:'#0f172a',
+      font:'13px/1.45 "Inter", system-ui, sans-serif', overflow:'hidden',
+    }}>
+      <Sidebar route={route} setRoute={setRoute} />
+      <div style={{ flex:1, display:'flex', flexDirection:'column', minWidth:0 }}>
+        <TopBar route={route} setRoute={setRoute} />
+        <div style={{ flex:1, overflow:'hidden', position:'relative' }}>
+          {route === 'dashboard' && <Dashboard filter={filter} setFilter={setFilter} onPatient={()=>setRoute('patient')} adherenceMode={adherenceMode} />}
+          {route === 'patient'   && <PatientDetail onPrescribe={()=>setRoute('prescribe')} onBack={()=>setRoute('dashboard')} adherenceMode={adherenceMode} />}
+          {route === 'prescribe' && <PrescriptionAuthoring onBack={()=>setRoute('patient')} />}
+          {route === 'shares'    && <SharesInbox onBack={()=>setRoute('patient')} />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PatientPrintWith({ route }) {
+  return (
+    <div style={{
+      width:'100%', height:'100%', background:'#f6f1e8', color:'#2a221b',
+      font:'14px/1.5 "Inter", sans-serif', display:'flex', flexDirection:'column',
+      overflow:'hidden', position:'relative',
+    }}>
+      <PStatusBar />
+      <div style={{ flex:1, display:'flex', flexDirection:'column', minHeight:0, position:'relative' }}>
+        {route === 'home' && <PHome go={()=>{}} adherenceMode="real" />}
+        {route === 'chat' && <PChat go={()=>{}} setPendingShare={()=>{}} />}
+        {route === 'prescriptions' && <PPrescriptions go={()=>{}} />}
+        {route === 'adherence' && <PAdherence go={()=>{}} adherenceMode="real" />}
+        {route === 'profile' && <PProfile go={()=>{}} />}
+        {route === 'shares' && <PShares go={()=>{}} />}
+        {route === 'shareOne' && <PShareReview go={()=>{}} idx={0} />}
+      </div>
+      {!['chat','shareOne'].includes(route) && (
+        <PTabBar route={route} go={()=>{}} />
+      )}
+    </div>
+  );
+}
+
+function ClinFrame({ children }) {
+  return <div className="clin-frame">{children}</div>;
+}
+function PhoneFramePrint({ children, cap }) {
+  return (
+    <div className="phone-stack">
+      <div className="phone-frame"><div className="phone-inner">{children}</div></div>
+      {cap && <div className="phone-cap">{cap}</div>}
+    </div>
+  );
+}
+
+function Page({ title, meta, children }) {
+  return (
+    <div className="page">
+      <div className="page-title">
+        <span>{title}</span>
+        <span className="meta">{meta}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// Build full print document
+function PrintDoc() {
+  return (
+    <>
+      {/* Page 1 — clinician dashboard */}
+      <Page title="Clinician · Patient panel" meta="Tend · between-visit care">
+        <ClinFrame><ClinicianPrintWith initialRoute="dashboard" /></ClinFrame>
+      </Page>
+
+      {/* Page 2 — clinician patient detail (Chen overview) */}
+      <Page title="Clinician · Chen Avraham (in-depth)" meta="Overview tab">
+        <ClinFrame><ClinicianPrintWith initialRoute="patient" /></ClinFrame>
+      </Page>
+
+      {/* Page 3 — prescription authoring */}
+      <Page title="Clinician · Prescription authoring" meta="Step 1 of 3 · session notes">
+        <ClinFrame><ClinicianPrintWith initialRoute="prescribe" /></ClinFrame>
+      </Page>
+
+      {/* Page 4 — clinician shares inbox */}
+      <Page title="Clinician · Inbox of shares" meta="What patients chose to share, across the panel">
+        <ClinFrame><ClinicianPrintWith initialRoute="shares" /></ClinFrame>
+      </Page>
+
+      {/* Page 5 — patient home + chat */}
+      <Page title="Patient · Today & Shari" meta="Home with pending share digest · chat with the clinician-personified AI">
+        <div className="phones-row">
+          <PhoneFramePrint cap="Home (pull-first)"><PatientPrintWith route="home" /></PhoneFramePrint>
+          <PhoneFramePrint cap="Shari · companion chat"><PatientPrintWith route="chat" /></PhoneFramePrint>
+        </div>
+      </Page>
+
+      {/* Page 6 — patient plan + adherence */}
+      <Page title="Patient · Plan & tracking" meta="What Dr. Kaplan prescribed · how Chen is doing">
+        <div className="phones-row">
+          <PhoneFramePrint cap="Plan (this week)"><PatientPrintWith route="prescriptions" /></PhoneFramePrint>
+          <PhoneFramePrint cap="How you're tracking"><PatientPrintWith route="adherence" /></PhoneFramePrint>
+        </div>
+      </Page>
+
+      {/* Page 7 — patient shares + share review */}
+      <Page title="Patient · Share with Dr. Kaplan" meta="Digest list · bullet-level consent moment">
+        <div className="phones-row">
+          <PhoneFramePrint cap="Shares — waiting & sent"><PatientPrintWith route="shares" /></PhoneFramePrint>
+          <PhoneFramePrint cap="Review · the consent moment"><PatientPrintWith route="shareOne" /></PhoneFramePrint>
+        </div>
+      </Page>
+
+      {/* Page 8 — patient profile (transparency surface) */}
+      <Page title="Patient · Profile" meta='"What the app knows about you"'>
+        <div className="phones-row">
+          <PhoneFramePrint cap="Profile · transparency surface"><PatientPrintWith route="profile" /></PhoneFramePrint>
+        </div>
+      </Page>
+    </>
+  );
+}
+
+document.fonts.ready.then(() => {
+  ReactDOM.createRoot(document.body.appendChild(document.createElement('div'))).render(<PrintDoc />);
+  // Auto-print after layout settles
+  setTimeout(() => { window.print(); }, 1200);
+});
+</script>
+
+</body>
+</html>

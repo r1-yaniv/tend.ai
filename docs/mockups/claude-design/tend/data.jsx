@@ -1,14 +1,18 @@
 // Shared mock data for Tend prototype.
-// Centered around Chen, a former IDF soldier with PTSD, and his clinician
-// Dr. Maya Levin. Other patients populate the dashboard.
+// Centered around Chen, an Israeli patient with PTSD, and his clinician
+// Shari B. Kaplan, LCSW. Other patients populate the dashboard.
 
 const CLINICIAN = {
-  id: 'levin',
-  name: 'Dr. Maya Levin',
-  title: 'Clinical Psychologist · CBT, Trauma',
-  initials: 'ML',
-  tone: 'warm-direct', // for AI persona
-  companionName: 'Maya', // patient-facing AI name
+  id: 'kaplan',
+  name: 'Shari B. Kaplan, LCSW',
+  shortName: 'Shari Kaplan',
+  firstName: 'Shari',
+  title: 'Licensed Clinical Social Worker · Trauma & PTSD',
+  initials: 'SK',
+  photo: 'shari.png',
+  tone: 'warm-direct',
+  companionName: 'Shari', // patient-facing AI name (clinician's voice clone)
+  voiceProvider: 'Delphi',
 };
 
 const CHEN = {
@@ -26,7 +30,7 @@ const CHEN = {
   notes: 'Reservist · 8 mo since discharge · single, lives alone in Tel Aviv',
 };
 
-// Roster for the clinician dashboard. Mix of states.
+// Roster for the clinician dashboard. Mix of states. (Chen is the only Israeli name.)
 const PATIENTS = [
   {
     id: 'chen', name: 'Chen Avraham', initials: 'CA', condition: 'PTSD',
@@ -36,44 +40,44 @@ const PATIENTS = [
     flag: 'Episode at 02:14 last night — patient declined AI guidance, requested space.',
   },
   {
-    id: 'noa', name: 'Noa Friedman', initials: 'NF', condition: 'GAD',
+    id: 'rachel', name: 'Rachel Bennett', initials: 'RB', condition: 'GAD',
     adherence: 91, trend: 'up', status: 'on-track',
     lastContact: '1d ago', nextSession: 'Wed · May 6',
     summary: 'Thought records completed 6/7 days. Worry-time adherence high.',
   },
   {
-    id: 'amir', name: 'Amir Cohen', initials: 'AC', condition: 'OCD',
+    id: 'marcus', name: 'Marcus Hill', initials: 'MH', condition: 'OCD',
     adherence: 78, trend: 'flat', status: 'on-track',
     lastContact: '4h ago', nextSession: 'Thu · May 7',
     summary: 'ERP hierarchy step 4/8. Two ritual-resistance wins logged.',
   },
   {
-    id: 'lior', name: 'Lior Bar-On', initials: 'LB', condition: 'Depression',
+    id: 'tyler', name: 'Tyler Brooks', initials: 'TB', condition: 'Depression',
     adherence: 45, trend: 'down', status: 'attention',
     lastContact: '3d ago', nextSession: 'Mon · May 11',
     summary: 'Behavioral activation lapsing. No journal entries since Sat.',
     flag: 'No engagement 72h. Auto-nudge sent.',
   },
   {
-    id: 'tamar', name: 'Tamar Sela', initials: 'TS', condition: 'Panic',
+    id: 'jenna', name: 'Jenna Reed', initials: 'JR', condition: 'Panic',
     adherence: 82, trend: 'up', status: 'on-track',
     lastContact: '6h ago', nextSession: 'Fri · May 8',
     summary: 'Interoceptive exposure 3× this week. Panic-attack frequency ↓.',
   },
   {
-    id: 'yair', name: 'Yair Mizrahi', initials: 'YM', condition: 'PTSD',
+    id: 'devon', name: 'Devon Carter', initials: 'DC', condition: 'PTSD',
     adherence: 71, trend: 'flat', status: 'on-track',
     lastContact: '1d ago', nextSession: 'Tue · May 12',
     summary: 'Trauma narrative sessions ongoing. Sleep stable.',
   },
   {
-    id: 'rinat', name: 'Rinat Ovadia', initials: 'RO', condition: 'GAD',
+    id: 'paige', name: 'Paige Harlow', initials: 'PH', condition: 'GAD',
     adherence: 88, trend: 'up', status: 'on-track',
     lastContact: '12h ago', nextSession: 'Wed · May 13',
     summary: 'Worry postponement working. Caffeine cutoff held 7/7.',
   },
   {
-    id: 'eden', name: 'Eden Klein', initials: 'EK', condition: 'Depression',
+    id: 'ethan', name: 'Ethan Walsh', initials: 'EW', condition: 'Depression',
     adherence: 58, trend: 'flat', status: 'attention',
     lastContact: '2d ago', nextSession: 'Thu · May 14',
     summary: 'Activity scheduling partial. Sleep window drift.',
@@ -83,13 +87,13 @@ const PATIENTS = [
 // Chen's prescription (the "contract")
 const PRESCRIPTION = {
   version: 'v3 · approved Apr 28',
-  approvedBy: 'Dr. Maya Levin',
+  approvedBy: 'Shari B. Kaplan, LCSW',
   protocol: 'Prolonged Exposure + sleep stabilization',
   tasks: [
     {
       id: 'imag-exp', title: 'Imaginal exposure recording',
       cadence: '4× / week', duration: '~30 min',
-      detail: 'Listen to the recorded narrative. SUDS log before/after. Maya can guide if SUDS ≥ 7.',
+      detail: 'Listen to the recorded narrative. SUDS log before/after. Shari can guide if SUDS ≥ 7.',
       type: 'exposure',
     },
     {
@@ -121,14 +125,12 @@ const PRESCRIPTION = {
     'Any SI ideation → immediate handoff to crisis protocol',
   ],
   aiAssistance: {
-    level: 'guided', // off | minimal | guided | full
+    level: 'guided',
     crisisGuidance: true,
-    description: 'Maya may guide Chen through grounding and exposure steps. May not initiate trauma processing. Hands off on crisis to human protocol.',
+    description: 'Shari may guide Chen through grounding and exposure steps. May not initiate trauma processing. Hands off on crisis to human protocol.',
   },
 };
 
-// Adherence over the last 14 days for Chen (per task, per day).
-// 1 = done, 0.5 = partial, 0 = missed, null = not scheduled
 const ADHERENCE_14D = {
   days: ['Apr 20','Apr 21','Apr 22','Apr 23','Apr 24','Apr 25','Apr 26','Apr 27','Apr 28','Apr 29','Apr 30','May 1','May 2','May 3'],
   rows: [
@@ -139,7 +141,6 @@ const ADHERENCE_14D = {
   ],
 };
 
-// Things shared from patient → clinician (audit log of approved shares)
 const SHARED_LOG = [
   { id:'s1', when:'Today · 03:42', kind:'episode', summary:'Nighttime episode · ~22 min · grounding used', detail:'Approved sharing: time, duration, grounding technique used, post-SUDS. Withheld: full conversation transcript.' },
   { id:'s2', when:'May 2 · 21:10', kind:'adherence', summary:'In-vivo exposure: skipped (Mon)', detail:'Reason given: "couldn\'t leave the apartment today"' },
@@ -148,7 +149,6 @@ const SHARED_LOG = [
   { id:'s5', when:'Apr 29 · 17:50', kind:'adherence', summary:'Imaginal exposure complete · SUDS 8→4', detail:'Auto-summary approved.' },
 ];
 
-// Pending share-up requests (waiting on patient approval)
 const PENDING_SHARES = [
   {
     id:'p1', kind:'episode', when:'about 30 min ago',
@@ -156,7 +156,7 @@ const PENDING_SHARES = [
     bullets:[
       'Started 02:14, lasted ~22 min',
       'Used 3-2-1 grounding (worked partially)',
-      'Declined Maya\'s help mid-way',
+      'Declined Shari\'s help mid-way',
       'Final SUDS: 5',
     ],
     transcript:false,

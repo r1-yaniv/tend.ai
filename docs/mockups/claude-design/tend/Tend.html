@@ -9,47 +9,135 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   html, body {
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0; min-height: 100vh;
     font-family: "Inter", system-ui, -apple-system, sans-serif;
-    background: #f0eee9;
-    color: #1a1715;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    background: #ece9e2; color: #1a1715;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
   }
   * { box-sizing: border-box; }
-  button { font-family: inherit; }
+  a { color: inherit; }
 
-  /* Annotation pin (toggleable) */
-  .anno-pin {
-    position: absolute;
-    width: 18px; height: 18px;
-    border-radius: 50%;
-    background: #fde047;
-    color: #422006;
-    border: 1.5px solid #92400e;
-    font: 600 10px/1 "JetBrains Mono", monospace;
-    display: flex; align-items: center; justify-content: center;
-    cursor: help;
-    z-index: 100;
-    box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  .page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 56px 32px 96px;
   }
-  .anno-pin:hover { transform: scale(1.15); }
-  .anno-tip {
-    position: absolute;
-    background: #1c1917;
-    color: #fafaf9;
-    padding: 8px 11px;
-    border-radius: 6px;
-    font-size: 11px;
-    line-height: 1.4;
-    max-width: 240px;
-    z-index: 101;
-    pointer-events: none;
-    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: "Instrument Serif", serif;
+    font-size: 28px; letter-spacing: -0.01em;
+  }
+
+  h1 {
+    font-family: "Instrument Serif", serif;
     font-weight: 400;
+    font-size: clamp(40px, 6vw, 68px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 36px 0 16px;
+    max-width: 18ch;
   }
-  .anno-hidden .anno-pin { display: none; }
+  h1 em { font-style: italic; color: #6a8c5e; }
+
+  .sub {
+    font-size: 17px; line-height: 1.55; color: #4a4239;
+    max-width: 56ch;
+    margin: 0 0 40px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    position: relative; display: block;
+    background: #fff; border-radius: 18px;
+    border: .5px solid rgba(15,23,42,.08);
+    box-shadow: 0 1px 0 rgba(15,23,42,.03), 0 20px 50px -28px rgba(15,23,42,.18);
+    text-decoration: none; color: inherit;
+    overflow: hidden;
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 4px 0 rgba(15,23,42,.03), 0 28px 64px -28px rgba(15,23,42,.24); }
+
+  .card-thumb { aspect-ratio: 4/3; position: relative; overflow: hidden; }
+  .card-clinician .card-thumb { background: #f0eeea; }
+  .card-patient .card-thumb { background: radial-gradient(circle at 50% 30%, #2a2723, #16140f); display: flex; align-items: center; justify-content: center; }
+  .card-body { padding: 18px 22px 20px; }
+  .card-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #6a8c5e; }
+  .card-title { font-family: "Instrument Serif", serif; font-size: 26px; letter-spacing: -0.01em; margin: 4px 0 6px; }
+  .card-desc { font-size: 13.5px; line-height: 1.55; color: #4a4239; margin: 0 0 12px; }
+  .card-cta { font-size: 13px; font-weight: 600; color: #0d6e6e; }
+
+  /* Mock chrome thumbnails */
+  .mock-mac {
+    position: absolute; inset: 12% 8% auto 8%;
+    background: #fdfdfb; border-radius: 8px;
+    border: .5px solid rgba(15,23,42,.1);
+    box-shadow: 0 12px 28px -12px rgba(15,23,42,.22);
+    aspect-ratio: 16/10;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .mock-mac-bar { height: 14px; background: #f1efea; border-bottom: .5px solid rgba(15,23,42,.08); display: flex; align-items: center; padding: 0 6px; gap: 4px; }
+  .mock-mac-bar span { width: 6px; height: 6px; border-radius: 50%; background: #d8d4cc; }
+  .mock-mac-body { flex: 1; display: flex; }
+  .mock-mac-side { width: 28%; background: #f1efea; border-right: .5px solid rgba(15,23,42,.06); padding: 6px 4px; display: flex; flex-direction: column; gap: 3px; }
+  .mock-mac-side i { display:block; height: 5px; background: rgba(15,23,42,.08); border-radius: 2px; }
+  .mock-mac-side i:nth-child(1) { width: 80%; background: rgba(13,110,110,.5); }
+  .mock-mac-side i:nth-child(2) { width: 60%; }
+  .mock-mac-side i:nth-child(3) { width: 70%; }
+  .mock-mac-side i:nth-child(4) { width: 50%; }
+  .mock-mac-main { flex:1; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .mock-mac-main b { display:block; height: 7px; background: rgba(15,23,42,.16); border-radius: 2px; width: 50%; }
+  .mock-mac-main em { display:block; height: 5px; background: rgba(15,23,42,.08); border-radius: 2px; font-style: normal; }
+  .mock-mac-row { display:flex; gap: 4px; align-items: center; padding: 3px 0; border-top: .5px solid rgba(15,23,42,.05); }
+  .mock-mac-row::before { content:''; width: 8px; height: 8px; border-radius: 50%; background: #cfdcce; flex-shrink: 0; }
+
+  .mock-phone {
+    width: 38%; aspect-ratio: 9/19;
+    background: #22201d; border-radius: 22px; padding: 3px;
+    box-shadow: 0 18px 36px -10px rgba(0,0,0,.5);
+  }
+  .mock-phone-inner {
+    width: 100%; height: 100%; border-radius: 20px; overflow: hidden;
+    background: #f6f1e8;
+    padding: 14px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .mock-phone-eyebrow { height: 4px; background: rgba(74,53,30,.18); border-radius: 2px; width: 36%; }
+  .mock-phone-title { height: 10px; background: rgba(74,53,30,.55); border-radius: 2px; width: 70%; }
+  .mock-phone-card { background: #fff; border-radius: 6px; padding: 6px; display: flex; flex-direction: column; gap: 3px; box-shadow: 0 1px 0 rgba(74,53,30,.05); }
+  .mock-phone-card i { display:block; height: 4px; background: rgba(74,53,30,.18); border-radius: 2px; }
+  .mock-phone-shari { background: #e3ebe1; border-radius: 6px; padding: 6px; display: flex; align-items: center; gap: 6px; }
+  .mock-phone-shari::before { content:''; width: 14px; height: 14px; border-radius: 50%; background: #6f8d72; flex-shrink: 0; }
+  .mock-phone-shari i { display:block; height: 4px; background: rgba(74,53,30,.4); border-radius: 2px; flex: 1; }
+
+  .meta {
+    margin-top: 56px;
+    display: flex; flex-wrap: wrap; gap: 24px 40px;
+    padding-top: 28px;
+    border-top: .5px solid rgba(15,23,42,.08);
+    font-size: 13px; color: #4a4239; line-height: 1.5;
+  }
+  .meta b { display:block; font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: #6a8c5e; margin-bottom: 4px; }
+
+  .footnote {
+    margin-top: 56px;
+    font-size: 12px; color: #6e6354; line-height: 1.5;
+  }
+  .footnote a { color: #0d6e6e; text-decoration: none; }
+  .footnote a:hover { text-decoration: underline; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+    color: #6a8c5e;
+    padding: 4px 10px; border-radius: 999px; background: #e3ebe1;
+  }
 </style>
 <script
     src="https://app.rybbit.io/api/script.js"
@@ -59,21 +147,84 @@
 </head>
 <body>
 
-<div id="root"></div>
+<main class="page">
+  <div class="brand">
+    <svg width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+      <circle cx="16" cy="16" r="14" fill="none" stroke="#0d6e6e" stroke-width="1.4"/>
+      <path d="M16 8c0 6 4 8 8 10-4 2-8 4-8 10-0-6-4-8-8-10 4-2 8-4 8-10z" fill="#0d6e6e"/>
+    </svg>
+    <span>Tend</span>
+  </div>
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <span class="badge" style="margin-top:36px">Prototype · mental health</span>
+  <h1>Care that lives in the days <em>between</em> sessions.</h1>
+  <p class="sub">
+    Tend gives clinicians a structured way to extend their work into the long stretch
+    between encounters — and gives patients a companion in their clinician's voice
+    that operates only inside an approved prescription. Two surfaces, one shared spine.
+  </p>
 
-<script type="text/babel" src="design-canvas.jsx"></script>
-<script type="text/babel" src="tweaks-panel.jsx"></script>
-<script type="text/babel" src="data.jsx"></script>
-<script type="text/babel" src="annotations.jsx"></script>
-<script type="text/babel" src="clinician.jsx"></script>
-<script type="text/babel" src="prescribe.jsx"></script>
-<script type="text/babel" src="patient.jsx"></script>
-<script type="text/babel" src="patient-screens.jsx"></script>
-<script type="text/babel" src="app.jsx"></script>
+  <div class="grid">
+    <a class="card card-clinician" href="Clinician.html">
+      <div class="card-thumb">
+        <div class="mock-mac">
+          <div class="mock-mac-bar"><span></span><span></span><span></span></div>
+          <div class="mock-mac-body">
+            <div class="mock-mac-side"><i></i><i></i><i></i><i></i></div>
+            <div class="mock-mac-main">
+              <b></b>
+              <em style="width:90%"></em>
+              <em style="width:70%"></em>
+              <div class="mock-mac-row"></div>
+              <div class="mock-mac-row"></div>
+              <div class="mock-mac-row"></div>
+              <div class="mock-mac-row"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-eyebrow">Clinician</div>
+        <h2 class="card-title">Shari B. Kaplan, LCSW</h2>
+        <p class="card-desc">Roster, between-visit signal, prescription authoring, and the inbox of patient-approved shares — the workspace where the practice actually runs.</p>
+        <div class="card-cta">Open clinician web →</div>
+      </div>
+    </a>
+
+    <a class="card card-patient" href="Patient.html">
+      <div class="card-thumb">
+        <div class="mock-phone">
+          <div class="mock-phone-inner">
+            <div class="mock-phone-eyebrow"></div>
+            <div class="mock-phone-title"></div>
+            <div class="mock-phone-shari"><i></i></div>
+            <div class="mock-phone-card"><i style="width:60%"></i><i style="width:40%"></i></div>
+            <div class="mock-phone-card"><i style="width:80%"></i><i style="width:50%"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-eyebrow">Patient</div>
+        <h2 class="card-title">Chen Avraham</h2>
+        <p class="card-desc">A warm, journal-like phone app. Today's plan, a companion in Dr. Kaplan's voice (powered by Delphi), and patient-controlled shares — nothing leaves the device without consent.</p>
+        <div class="card-cta">Open patient mobile →</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="meta">
+    <div>
+      <b>How they connect</b>
+      Approve a prescription on the clinician web → a hint pops up on the patient app.
+      Approve a share on the patient phone → it lands in the clinician inbox.
+      Open both pages in different tabs to feel the loop.
+    </div>
+    <div>
+      <b>Try the canvas</b>
+      Want both apps side by side? <a href="Tend-canvas.html" style="color:#0d6e6e; text-decoration:none">Open the design canvas →</a>
+    </div>
+  </div>
+</main>
 
 </body>
 </html>
