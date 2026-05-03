@@ -304,10 +304,10 @@ function ApproveStep({ draft, onBack, onApprove }) {
   const handleApprove = () => {
     const planHint = {
       target:'patient',
-      anchor:'[data-plan-header]',
+      anchor:'[data-plan-card]',
       title:'Dr. Kaplan updated your plan',
-      body:'A new prescription is here. Tap any task to see what changed, or open Shari to talk through it.',
-      action:{ label:'Talk to Shari', route:'chat' },
+      body:'A new prescription is here — café exposure scaled to late afternoon, sleep window tightened. Open Plan to see what changed.',
+      action:{ label:'Open plan', route:'prescriptions' },
     };
     if (window.tendBus) {
       window.tendBus.emit('rx-approved', { version:'v4' });
@@ -317,9 +317,9 @@ function ApproveStep({ draft, onBack, onApprove }) {
       window.tendToast({
         tone:'success',
         title:'Prescription v4 approved',
-        body:'Chen will see the update next time he opens Tend. Want to see how it lands?',
+        body:'Chen will see the update next time he opens Tend. Want to see how it lands on his end?',
         linkLabel:'Open Chen\'s phone',
-        linkHref:'Patient.html?route=prescriptions',
+        linkHref:'Patient.html',
         hint: planHint,
       });
     }

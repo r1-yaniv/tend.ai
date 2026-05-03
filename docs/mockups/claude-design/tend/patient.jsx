@@ -235,7 +235,7 @@ function PHome({ go, adherenceMode }) {
 
       {/* Today's plan */}
       <SectionLabel>Today's plan</SectionLabel>
-      <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:18 }}>
+      <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:18 }} data-plan-card>
         {today.map(item => (
           <TodayItem key={item.id} item={item} onOpen={() => go('chat')} />
         ))}

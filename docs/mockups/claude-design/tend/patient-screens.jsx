@@ -651,7 +651,7 @@ function PShareReview({ go, idx = 0 }) {
             target:'clinician',
             anchor:'[data-shares-nav]',
             title:'Chen shared an episode summary',
-            body:'A new approved share just landed in your Inbox · last night\'s nighttime episode (~22 min, grounding used).',
+            body:'A new approved share just landed in your Inbox — last night\'s nighttime episode (~22 min, grounding used). Open Inbox to read it.',
             action:{ label:'Open inbox', route:'shares' },
           };
           if (window.tendBus) window.tendBus.postHint(sharesHint);
@@ -659,9 +659,9 @@ function PShareReview({ go, idx = 0 }) {
             window.tendToast({
               tone:'success',
               title:'Shared with Dr. Kaplan',
-              body:'She\'ll see this in her inbox.',
-              linkLabel:'See it on her side',
-              linkHref:'Clinician.html?route=shares',
+              body:'She\'ll see this in her inbox the next time she opens Tend. Want to see how it lands on her end?',
+              linkLabel:'Open her workspace',
+              linkHref:'Clinician.html',
               hint: sharesHint,
             });
           }

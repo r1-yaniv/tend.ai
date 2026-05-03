@@ -10,9 +10,15 @@ function CrossTooltip({ target, onAction }) {
 
   React.useEffect(() => {
     if (!window.tendBus) return;
+    // Synchronously drain anything already in storage on mount.
+    const pending = window.tendBus.consumeHint(target);
+    if (pending) {
+      setHint(pending);
+      setTimeout(() => setHint(curr => (curr && curr.nonce === pending.nonce) ? null : curr), 12000);
+    }
+    // Then subscribe for future hints.
     const off = window.tendBus.subscribeHints(target, (h) => {
       setHint(h);
-      // Auto-dismiss after 12s
       setTimeout(() => setHint(curr => (curr && curr.nonce === h.nonce) ? null : curr), 12000);
     });
     return off;
@@ -21,6 +27,7 @@ function CrossTooltip({ target, onAction }) {
   // Re-anchor when hint changes or window resizes.
   React.useEffect(() => {
     if (!hint) { setPos(null); return; }
+    let didScroll = false;
     const place = () => {
       if (!hint.anchor) {
         setPos({ centered: true });
@@ -28,10 +35,49 @@ function CrossTooltip({ target, onAction }) {
       }
       const el = document.querySelector(hint.anchor);
       if (!el) { setPos({ centered: true }); return; }
+      // If the anchor is offscreen OR the tooltip would land below the
+      // viewport, scroll its nearest scrollable ancestor (and/or window)
+      // so the tooltip lands somewhere visible. We need ~140px of space
+      // below the anchor for the tooltip card to fit. Only do this once
+      // per hint so the place() polling doesn't re-scroll forever.
+      if (!didScroll) {
+        const r0 = el.getBoundingClientRect();
+        const TOOLTIP_H = 160;
+        const needsScroll = r0.top < 0 || r0.bottom + TOOLTIP_H > window.innerHeight ||
+                            r0.right < 0 || r0.left > window.innerWidth;
+        if (needsScroll) {
+          // Walk up to find the nearest scrollable ancestor and adjust scrollTop.
+          let p = el.parentElement;
+          let scrolled = false;
+          while (p) {
+            const cs = getComputedStyle(p);
+            const oy = cs.overflowY;
+            if ((oy === 'auto' || oy === 'scroll') && p.scrollHeight > p.clientHeight) {
+              const elTop = el.getBoundingClientRect().top;
+              const pRect = p.getBoundingClientRect();
+              const target = (elTop - pRect.top) - 24;
+              p.scrollTop += target;
+              scrolled = true;
+              break;
+            }
+            p = p.parentElement;
+          }
+          // Also scroll the window if needed.
+          if (!scrolled || el.getBoundingClientRect().bottom + TOOLTIP_H > window.innerHeight) {
+            const r1 = el.getBoundingClientRect();
+            window.scrollBy({ top: r1.top - 60, behavior: 'auto' });
+          }
+          didScroll = true;
+        } else {
+          didScroll = true;
+        }
+      }
       const r = el.getBoundingClientRect();
+      // Use viewport coords with position:fixed so the tooltip survives
+      // overflow:hidden ancestors (the clinician shell, the phone frame).
       setPos({
-        top: r.bottom + window.scrollY + 8,
-        left: r.left + window.scrollX + r.width / 2,
+        top: r.bottom + 8,
+        left: r.left + r.width / 2,
         anchorRect: r,
       });
     };
@@ -49,7 +95,7 @@ function CrossTooltip({ target, onAction }) {
     position:'fixed', top:'50%', left:'50%', transform:'translate(-50%, -50%)',
     zIndex: 99999,
   } : {
-    position:'absolute', top: pos.top, left: pos.left, transform:'translateX(-50%)',
+    position:'fixed', top: pos.top, left: pos.left, transform:'translateX(-50%)',
     zIndex: 99999,
   };
 
