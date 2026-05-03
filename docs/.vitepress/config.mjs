@@ -5,12 +5,12 @@ import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-  title: 'Medical Idea (TBD)',
-  description: 'Product Requirements Document',
+  title: 'Tend',
+  description: 'Tend — Product Requirements Document',
   themeConfig: {
     nav: [
       { text: 'PRD', link: '/prd/01-overview' },
-      { text: 'Download PDF', link: '/Medical-Idea-TBD-PRD.pdf', target: '_blank' },
+      { text: 'Download PDF', link: '/Tend-PRD.pdf', target: '_blank' },
     ],
     sidebar: {
       '/prd/': [
@@ -36,7 +36,7 @@ export default defineConfig({
   async buildEnd(siteConfig) {
     const { generatePdf } = await import('../../scripts/generate-pdf.mjs')
     const docsDir = join(__dirname, '..', 'prd')
-    const outPath = join(siteConfig.outDir, 'Medical-Idea-TBD-PRD.pdf')
+    const outPath = join(siteConfig.outDir, 'Tend-PRD.pdf')
     await generatePdf(docsDir, outPath)
     console.log('PDF generated at', outPath)
   }

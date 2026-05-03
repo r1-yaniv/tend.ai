@@ -5,7 +5,7 @@ import { generatePdf } from './generate-pdf.mjs';
 const docsDir = join(import.meta.dirname, '..', 'docs', 'prd');
 const mockupsDir = join(import.meta.dirname, '..', 'docs', 'mockups');
 const publicDir = join(import.meta.dirname, '..', 'docs', 'public');
-const outPath = join(publicDir, 'Medical-Idea-TBD-PRD.pdf');
+const outPath = join(publicDir, 'Tend-PRD.pdf');
 
 mkdirSync(publicDir, { recursive: true });
 
