@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Tend — The half of care that happens between visits</title>
+  <meta name="viewport" content="width=1920, initial-scale=1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      /* Tend palette — warm paper, editorial */
+      --bg-0: oklch(0.96 0.008 80);
+      --bg-1: oklch(0.94 0.010 80);
+      --bg-2: oklch(0.91 0.012 80);
+      --bg-3: oklch(0.88 0.014 80);
+      --paper: oklch(0.97 0.008 80);
+
+      --line-1: oklch(0.86 0.012 80);
+      --line-2: oklch(0.78 0.014 80);
+
+      --ink-0: oklch(0.20 0.012 60);
+      --ink-1: oklch(0.34 0.012 60);
+      --ink-2: oklch(0.50 0.010 60);
+      --ink-3: oklch(0.62 0.008 60);
+
+      --teal: oklch(0.45 0.06 175);
+      --teal-soft: oklch(0.78 0.05 175);
+      --teal-bg: oklch(0.92 0.025 175);
+
+      --warn: oklch(0.58 0.14 50);
+      --warn-soft: oklch(0.92 0.05 60);
+
+      --safe: oklch(0.55 0.12 145);
+
+      --font-serif: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+      --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+    }
+
+    body { font-family: var(--font-sans); }
+
+    deck-stage section {
+      background: var(--bg-0);
+      color: var(--ink-0);
+      font-size: 22px;
+      line-height: 1.5;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* === Chrome === */
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 72px 96px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 400;
+      font-style: italic;
+      letter-spacing: -0.005em;
+      color: var(--ink-1);
+    }
+
+    .header .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--ink-3);
+    }
+
+    .header .tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+      font-style: normal;
+    }
+
+    .header .right {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+
+    .footer {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 28px;
+      border-top: 1px solid var(--line-1);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.10em;
+      color: var(--ink-3);
+    }
+
+    /* === Type === */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 28px;
+    }
+
+    .display-xl {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 148px;
+      letter-spacing: -0.025em;
+      line-height: 0.98;
+      color: var(--ink-0);
+    }
+    .display-lg {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 104px;
+      letter-spacing: -0.022em;
+      line-height: 1.02;
+      color: var(--ink-0);
+    }
+    .display-md {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 76px;
+      letter-spacing: -0.018em;
+      line-height: 1.06;
+      color: var(--ink-0);
+    }
+    .display-sm {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 52px;
+      letter-spacing: -0.014em;
+      line-height: 1.1;
+      color: var(--ink-0);
+    }
+    .kicker {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 36px;
+      line-height: 1.35;
+      color: var(--ink-1);
+      letter-spacing: -0.005em;
+    }
+    .body-lg {
+      font-size: 26px;
+      line-height: 1.55;
+      color: var(--ink-1);
+    }
+    .body {
+      font-size: 22px;
+      line-height: 1.55;
+      color: var(--ink-1);
+    }
+    em.serif {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink-0);
+    }
+
+    .accent { color: var(--teal); }
+    .warn { color: var(--warn); }
+    .safe { color: var(--safe); }
+    .muted { color: var(--ink-2); }
+    .strike { color: var(--ink-3); text-decoration: line-through; text-decoration-thickness: 2px; }
+    .mono { font-family: var(--font-mono); }
+
+    /* === Helpers === */
+    .row { display: flex; }
+    .col { display: flex; flex-direction: column; }
+    .grow { flex: 1; min-width: 0; min-height: 0; }
+    .center { align-items: center; justify-content: center; }
+    .gap-12 { gap: 12px; } .gap-16 { gap: 16px; } .gap-20 { gap: 20px; }
+    .gap-24 { gap: 24px; } .gap-32 { gap: 32px; } .gap-48 { gap: 48px; } .gap-64 { gap: 64px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--teal-bg);
+      color: var(--teal);
+      border: 1px solid oklch(from var(--teal) l c h / 0.3);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .badge .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      animation: pulse 2.4s ease-out infinite;
+    }
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 0 0 oklch(from var(--teal) l c h / 0.55); }
+      70%  { box-shadow: 0 0 0 10px oklch(from var(--teal) l c h / 0); }
+      100% { box-shadow: 0 0 0 0 oklch(from var(--teal) l c h / 0); }
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-lg);
+      padding: 32px 36px;
+    }
+    .card .num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      color: var(--teal);
+      margin-bottom: 14px;
+    }
+    .card h3 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 36px;
+      margin: 0 0 14px;
+      letter-spacing: -0.012em;
+      line-height: 1.15;
+      color: var(--ink-0);
+    }
+    .card p {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.55;
+      color: var(--ink-1);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--ink-1);
+    }
+    .pill.accent {
+      color: var(--teal);
+      background: var(--teal-bg);
+      border-color: oklch(from var(--teal) l c h / 0.3);
+    }
+    .pill.warn {
+      color: var(--warn);
+      background: var(--warn-soft);
+      border-color: oklch(from var(--warn) l c h / 0.3);
+    }
+
+    .stat {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 28px 32px;
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-lg);
+    }
+    .stat .n {
+      font-family: var(--font-serif);
+      font-size: 76px;
+      font-weight: 400;
+      letter-spacing: -0.025em;
+      color: var(--teal);
+      line-height: 1;
+    }
+    .stat .n .u {
+      font-size: 32px;
+      color: var(--ink-2);
+      margin-left: 4px;
+      font-family: var(--font-sans);
+    }
+    .stat .l {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-2);
+    }
+    .stat .src {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-3);
+      letter-spacing: 0.04em;
+      margin-top: 6px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+    .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+
+    /* Feature list (diamond bullets) */
+    .feat {
+      list-style: none; margin: 12px 0 0; padding: 0;
+      display: grid; gap: 14px;
+    }
+    .feat li {
+      display: grid; grid-template-columns: 26px 1fr;
+      gap: 14px; align-items: start;
+      font-size: 21px; line-height: 1.55;
+      color: var(--ink-1);
+    }
+    .feat li::before {
+      content: '';
+      width: 8px; height: 8px;
+      margin-top: 12px; margin-left: 6px;
+      border-radius: 1px;
+      transform: rotate(45deg);
+      background: var(--teal);
+      box-shadow: 0 0 0 3px oklch(from var(--teal) l c h / 0.18);
+    }
+    .feat li b { color: var(--ink-0); font-weight: 600; }
+
+    /* Mockup frames */
+    .shot {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow:
+        0 1px 2px oklch(0 0 0 / 0.04),
+        0 12px 32px oklch(0 0 0 / 0.08),
+        0 30px 80px oklch(0 0 0 / 0.06),
+        inset 0 0 0 1px var(--line-1);
+    }
+    .shot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .shot.contain img {
+      object-fit: contain;
+      background: var(--paper);
+    }
+    .shot .caption {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      background: oklch(0.18 0.01 60 / 0.85);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      color: oklch(0.95 0.005 80);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Two-col copy + screenshot */
+    .twocol {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 56px;
+      flex: 1;
+      align-items: stretch;
+      min-height: 0;
+    }
+    .twocol .copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+    .twocol .copy h2 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 64px;
+      letter-spacing: -0.018em;
+      line-height: 1.05;
+      margin: 16px 0 24px;
+      color: var(--ink-0);
+    }
+    .twocol .copy p {
+      margin: 0 0 18px;
+      color: var(--ink-1);
+      font-size: 22px;
+      line-height: 1.55;
+      max-width: 640px;
+    }
+    .twocol .copy .lead {
+      color: var(--ink-0);
+      font-size: 28px;
+      font-weight: 400;
+      font-family: var(--font-serif);
+      line-height: 1.35;
+      max-width: 640px;
+    }
+    .twocol .shot-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0; min-height: 0;
+    }
+    .twocol .shot { width: 100%; max-height: 100%; }
+    .twocol.mirror { grid-template-columns: 1.35fr 1fr; }
+
+    /* Cover */
+    .cover {
+      position: absolute; inset: 0;
+      display: grid; grid-template-rows: auto 1fr auto;
+      padding: 72px 96px;
+      background:
+        radial-gradient(1400px 900px at 85% 15%, oklch(from var(--teal) l c h / 0.10), transparent 60%),
+        radial-gradient(1000px 700px at 15% 95%, oklch(from var(--warn) l c h / 0.06), transparent 55%),
+        var(--bg-0);
+    }
+    .cover .brand {
+      display: flex; align-items: center; gap: 14px;
+      font-family: var(--font-serif); font-style: italic; font-size: 24px;
+      color: var(--ink-1);
+    }
+    .cover .brand .mark {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 28px;
+      width: 44px; height: 44px;
+      display: grid; place-items: center;
+      background: var(--teal-bg);
+      color: var(--teal);
+      border-radius: 10px;
+      border: 1px solid oklch(from var(--teal) l c h / 0.25);
+    }
+    .cover .title-block { align-self: end; }
+    .cover .tagline {
+      margin-top: 28px;
+      max-width: 1500px;
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 36px;
+      line-height: 1.4;
+      color: var(--ink-1);
+    }
+    .cover .tagline strong { color: var(--ink-0); font-weight: 500; }
+    .cover .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      color: var(--ink-3);
+    }
+    .cover .sig {
+      display: grid; grid-template-columns: auto auto;
+      gap: 4px 16px; color: var(--ink-2);
+    }
+    .cover .sig b { color: var(--ink-0); font-weight: 500; }
+
+    /* Divider slide */
+    .divider {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      padding: 96px;
+      background:
+        radial-gradient(1200px 800px at 50% 40%, oklch(from var(--teal) l c h / 0.07), transparent 60%),
+        var(--bg-0);
+      text-align: center;
+    }
+    .divider .display-lg { max-width: 1500px; margin: 0 auto; }
+    .divider .body-lg { max-width: 1100px; margin: 32px auto 0; color: var(--ink-2); }
+
+    /* Causal arc — boxes & arrows */
+    .arc {
+      display: grid;
+      grid-template-columns: repeat(7, auto);
+      gap: 18px;
+      align-items: stretch;
+      justify-content: start;
+      width: 100%;
+    }
+    .arc .node {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-md);
+      padding: 22px 26px;
+      min-width: 0;
+    }
+    .arc .node .kind {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 8px;
+    }
+    .arc .node .lbl {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 28px;
+      color: var(--ink-0);
+      letter-spacing: -0.012em;
+      line-height: 1.15;
+    }
+    .arc .node.warn-node {
+      background: var(--warn-soft);
+      border-color: oklch(from var(--warn) l c h / 0.3);
+    }
+    .arc .node.warn-node .lbl { color: var(--warn); }
+    .arc .arr {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink-3);
+      font-family: var(--font-mono); font-size: 22px;
+    }
+
+    /* Components rail */
+    .rail-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 18px;
+    }
+    .rail-5 .step {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-md);
+      padding: 24px 22px 26px;
+      min-height: 220px;
+      display: flex; flex-direction: column;
+    }
+    .rail-5 .step .n {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+    .rail-5 .step .t {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 26px;
+      color: var(--ink-0);
+      line-height: 1.18;
+      letter-spacing: -0.012em;
+      margin-bottom: 10px;
+    }
+    .rail-5 .step .d {
+      font-size: 15px;
+      color: var(--ink-2);
+      line-height: 1.5;
+    }
+
+    /* Cross-specialty table */
+    .xtbl {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .xtbl th, .xtbl td {
+      text-align: left;
+      padding: 18px 22px;
+      vertical-align: top;
+      font-size: 18px;
+      line-height: 1.45;
+      color: var(--ink-1);
+      border-bottom: 1px solid var(--line-1);
+      border-right: 1px solid var(--line-1);
+    }
+    .xtbl th {
+      background: var(--bg-2);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+    .xtbl tr:last-child td { border-bottom: 0; }
+    .xtbl th:last-child, .xtbl td:last-child { border-right: 0; }
+    .xtbl td b { color: var(--ink-0); font-weight: 600; }
+    .xtbl td.lead {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 22px;
+      color: var(--ink-0);
+      letter-spacing: -0.005em;
+      background: var(--bg-1);
+    }
+
+    /* Wedge cards (3 candidates) */
+    .wedge {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-lg);
+      padding: 32px 32px 28px;
+      display: flex; flex-direction: column;
+    }
+    .wedge .tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      color: var(--ink-3);
+    }
+    .wedge h3 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 40px;
+      letter-spacing: -0.014em;
+      margin: 0 0 16px;
+      color: var(--ink-0);
+      line-height: 1.05;
+    }
+    .wedge .row-pair {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-bottom: 14px;
+    }
+    .wedge .row-pair .k {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--ink-3);
+      margin-bottom: 6px;
+    }
+    .wedge .row-pair .v {
+      font-size: 16px; color: var(--ink-1); line-height: 1.45;
+    }
+    .wedge .takeaway {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px dashed var(--line-2);
+      font-size: 16px;
+      color: var(--ink-1);
+      font-style: italic;
+      font-family: var(--font-serif);
+    }
+    .wedge.starter { background: var(--teal-bg); border-color: oklch(from var(--teal) l c h / 0.3); }
+    .wedge.starter .tag { color: var(--teal); }
+
+    /* Pull-quote */
+    .quote {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-size: 56px;
+      line-height: 1.2;
+      letter-spacing: -0.018em;
+      color: var(--ink-0);
+      max-width: 1500px;
+    }
+    .quote::before {
+      content: '\201C';
+      display: block;
+      font-size: 120px;
+      line-height: 0.8;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+    .quote-attr {
+      margin-top: 28px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+
+    /* Not-claiming list */
+    .claim-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 20px;
+      align-items: center;
+      padding: 18px 24px;
+      border-radius: var(--radius-md);
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      margin-bottom: 12px;
+    }
+    .claim-row .mark {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.10em;
+      padding: 6px 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .claim-row.no .mark { background: oklch(from var(--warn) l c h / 0.12); color: var(--warn); }
+    .claim-row.yes .mark { background: oklch(from var(--safe) l c h / 0.12); color: var(--safe); }
+    .claim-row .text { font-size: 22px; color: var(--ink-0); line-height: 1.4; }
+    .claim-row .text b { font-weight: 600; }
+  </style>
+</head>
+
+<body>
+
+  <deck-stage width="1920" height="1080">
+
+    <!-- ───────────────────────────────────────────────────────────
+       1. COVER
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Cover">
+      <div class="cover">
+        <div class="brand">
+          <span class="mark">t</span>
+          <span style="font-family: var(--font-serif); font-style: italic; font-weight: 500; color: var(--ink-0);">Tend</span>
+          <span class="dot" style="width:4px;height:4px;border-radius:50%;background:var(--ink-3);margin:0 4px;"></span>
+          <span style="font-family:var(--font-mono); font-style: normal; font-size:13px; letter-spacing:0.20em; text-transform:uppercase; color:var(--ink-2);">Between-visit care · v0 preview</span>
+        </div>
+
+        <div class="title-block">
+          <div class="badge"><span class="pulse"></span>The half of care no one is building</div>
+          <h1 class="display-xl" style="margin: 36px 0 0;">
+            The 99% of life<br/>
+            that happens <span class="accent">between visits</span><span class="muted">.</span>
+          </h1>
+          <p class="tagline">
+            Tend is the infrastructure for the half of care that's currently
+            <em class="serif">invisible, unsupported, and unmeasured</em> —
+            <strong>clinician-prescribed, patient-owned, pull-first.</strong>
+          </p>
+        </div>
+
+        <div class="meta">
+          <div class="sig">
+            <span>Prepared by</span><b>Yaniv Kaplan · Roomone</b>
+            <span>For</span><b>Investor / clinical-advisor preview</b>
+          </div>
+          <div class="mono muted">v0 · 2026</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       2. NOTE ON SCOPE — start MH, generalize
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="A note on scope">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">A note on scope</span>
+          <span class="right">01 · Setup</span>
+        </div>
+
+        <div class="col grow center" style="justify-content:center;">
+          <div style="max-width: 1600px;">
+            <div class="eyebrow">How to read this deck</div>
+            <h2 class="display-md">
+              We start in <span class="accent">mental health.</span><br/>
+              The primitive is <em class="serif">universal</em>.
+            </h2>
+            <p class="kicker" style="max-width: 1500px; margin-top: 36px;">
+              Specifically: outpatient psychotherapy and psychiatry, where care is delivered through
+              periodic sessions with a single clinician. Every example below is written through that lens.
+            </p>
+            <p class="body-lg" style="max-width: 1500px; margin-top: 22px; color: var(--ink-2);">
+              But the underlying primitive — <em class="serif">the half of care that happens between visits</em> —
+              exists in every longitudinal clinician-patient relationship. Throughout the deck we cross-check
+              the design against two other specialties:
+            </p>
+
+            <div class="grid-2" style="margin-top: 36px; max-width: 1500px;">
+              <div class="card">
+                <div class="num">CROSS-SPECIALTY · A</div>
+                <h3>Nutrition / dietetics</h3>
+                <p>Prescription is a meal plan. Deviation is an off-plan meal. Deterioration is weight, labs, energy, GI symptoms, or eating-disorder behaviors trending wrong.</p>
+              </div>
+              <div class="card">
+                <div class="num">CROSS-SPECIALTY · B</div>
+                <h3>Drug adherence</h3>
+                <p>Prescription is a regimen. Deviation is a missed or doubled dose. Deterioration is the underlying condition recurring — and the signal can come from pharmacy data.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>01 · Setup</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       3. TERMINOLOGY — the causal arc
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Terminology">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">A note on terminology</span>
+          <span class="right">02 · Setup</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 24px; gap: 56px; justify-content: center;">
+          <div>
+            <div class="eyebrow">The causal arc the rest of the deck operates on</div>
+            <h2 class="display-md">
+              Between visits → <span class="muted">prescription execution</span> → <span class="muted">deviation</span> → <span class="warn">deterioration.</span>
+            </h2>
+          </div>
+
+          <div class="arc" style="max-width: 1700px;">
+            <div class="node">
+              <div class="kind">The window</div>
+              <div class="lbl">Between visits</div>
+            </div>
+            <div class="arr">→</div>
+            <div class="node">
+              <div class="kind">The work</div>
+              <div class="lbl">Prescription<br/>execution</div>
+            </div>
+            <div class="arr">→</div>
+            <div class="node">
+              <div class="kind">Did it happen</div>
+              <div class="lbl">Adherence ·<br/>Deviation</div>
+            </div>
+            <div class="arr">→</div>
+            <div class="node warn-node">
+              <div class="kind">The cost</div>
+              <div class="lbl">Deterioration</div>
+            </div>
+          </div>
+
+          <div class="grid-4" style="margin-top: 8px; max-width: 1700px;">
+            <div>
+              <div class="mono" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">Between visits</div>
+              <div class="body" style="color:var(--ink-1);">Days or weeks between clinician encounters — typically <b>1–4 weeks</b> in psychotherapy.</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">Prescription execution</div>
+              <div class="body" style="color:var(--ink-1);">The patient actually doing the work the clinician prescribed — exposures, thought records, BA, sleep window.</div>
+            </div>
+            <div>
+              <div class="mono" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">Deviation</div>
+              <div class="body" style="color:var(--ink-1);">The gap between what was prescribed and what was done. <em>"I did the exposure with headphones in." "I skipped."</em></div>
+            </div>
+            <div>
+              <div class="mono" style="font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">Deterioration</div>
+              <div class="body" style="color:var(--ink-1);">The negative outcome of sustained deviation — PHQ-9 / GAD-7 / SPIN climbing, avoidance broadening.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>02 · Setup</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       4. PROBLEM SPACE — the gap
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="The gap">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The problem space</span>
+          <span class="right">03 · The Problem</span>
+        </div>
+
+        <div class="col grow center" style="justify-content:center;">
+          <div style="max-width: 1700px;">
+            <div class="eyebrow">Outpatient mental health</div>
+            <h2 class="display-lg">
+              Treatment is a series of<br/>
+              45-minute sessions, <span class="muted">1–4 weeks apart.</span>
+            </h2>
+            <p class="kicker" style="margin-top: 36px; max-width: 1500px;">
+              Between any two sessions, the patient lives <em class="serif">roughly 99% of their life.</em>
+              That 99% is where:
+            </p>
+
+            <div class="grid-2" style="margin-top: 44px; max-width: 1500px; gap: 32px;">
+              <div class="card">
+                <div class="num">THE WORK</div>
+                <h3>The therapeutic work is meant to happen.</h3>
+                <p>Exposures, thought records, behavioral activation, journaling, practice. The load-bearing mechanism by which session content becomes durable change.<br/><span class="muted" style="font-size:15px;">Bennett-Levy 2003; Kazantzis et al. 2000, 2010, 2016</span></p>
+              </div>
+              <div class="card">
+                <div class="num">THE SYMPTOMS</div>
+                <h3>The actual symptoms occur.</h3>
+                <p>The panic at 2am. The rumination spiral. The dissociative episode. The urge to drink. The session is the wrong place to catch any of it.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>03 · The Problem</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       5. PROBLEM — invisible, unsupported, unmeasured
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Invisible · Unsupported · Unmeasured">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The problem space</span>
+          <span class="right">04 · The Problem</span>
+        </div>
+
+        <div class="col grow center" style="justify-content:center;">
+          <div style="max-width: 1700px;">
+            <div class="eyebrow">What's wrong with the status quo</div>
+            <h2 class="display-md">
+              Right now, the between-visit half is<br/>
+              <span class="warn">invisible. unsupported. unmeasured.</span>
+            </h2>
+
+            <div class="grid-3" style="margin-top: 56px;">
+              <div class="card">
+                <div class="num">UNSUPPORTED</div>
+                <h3>The patient has no scaffolding.</h3>
+                <p>Partial compliance is the default. Deviation drives deterioration. The treatment plan exists but has nowhere to live between Tuesdays.</p>
+              </div>
+              <div class="card" style="background: var(--bg-2);">
+                <div class="num">INVISIBLE</div>
+                <h3>The clinician has no view.</h3>
+                <p>What actually happened in the gap is not observable. The clinician inherits a curated retrospective at the next session, not a continuous picture.</p>
+              </div>
+              <div class="card">
+                <div class="num">UNMEASURED</div>
+                <h3>Self-report is all there is.</h3>
+                <p>Recall bias trims the signal before it arrives. Trends that should trigger action don't surface until the patient has been off-track for weeks.</p>
+              </div>
+            </div>
+
+            <p class="body-lg" style="margin-top: 56px; max-width: 1500px; color: var(--ink-2);">
+              The clinician depends on retrospective self-report and misses an opportunity to act on
+              meaningful, accurate signals that <em class="serif">already exist in the patient's life</em> —
+              they just have no path up.
+            </p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>04 · The Problem</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       6. EVIDENCE — the clinical literature
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="The clinical evidence">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Why it matters</span>
+          <span class="right">05 · The Problem</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 16px; gap: 40px; justify-content: center;">
+          <div>
+            <div class="eyebrow">Not a hypothesis. The literature is clear.</div>
+            <h2 class="display-md">
+              The inter-session half is where<br/>
+              <span class="accent">outcome is decided.</span>
+            </h2>
+          </div>
+
+          <div class="grid-4" style="gap: 18px;">
+            <div class="stat">
+              <div class="n">68<span class="u">→ 83%</span></div>
+              <div class="l">Adherence — standard care vs. with structured between-session app</div>
+              <div class="src">Tuerk 2023 · OC-Go RCT · Childhood OCD</div>
+            </div>
+            <div class="stat">
+              <div class="n">d = 0.72</div>
+              <div class="l">Effect on CYBOCS at week 12 — same trial</div>
+              <div class="src">Tuerk 2023</div>
+            </div>
+            <div class="stat">
+              <div class="n">d = 0.23</div>
+              <div class="l">PHQ-9 reduction in not-on-track patients via outcome feedback</div>
+              <div class="src">Delgadillo 2018 · Lancet Psy. · n=2,233</div>
+            </div>
+            <div class="stat">
+              <div class="n">43<span class="u">% vs 22%</span></div>
+              <div class="l">Pull-first ("do you want support?") beats inferred-distress pings</div>
+              <div class="src">Elmer 2025 · JMIR · JITAI</div>
+            </div>
+          </div>
+
+          <p class="body-lg" style="max-width: 1700px; color: var(--ink-1);">
+            <em class="serif">Homework adherence is the strongest single predictor of outcome in CBT and exposure therapies, when it's measured.</em>
+            We are not inventing a new therapeutic mechanism — we are operationalizing a known one
+            that the field already knows drives outcomes, and that practitioners already wish they had a tool for.
+          </p>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>05 · The Problem</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       7. WHY IT PERSISTS
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Why it persists">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Why it persists</span>
+          <span class="right">06 · The Problem</span>
+        </div>
+
+        <div class="col grow center" style="justify-content:center;">
+          <div style="max-width: 1700px;">
+            <div class="eyebrow">The gap isn't open because the field hasn't noticed</div>
+            <h2 class="display-md">
+              It's open because closing it has been<br/>
+              <span class="muted">operationally impossible</span><span>.</span>
+            </h2>
+
+            <div class="grid-2" style="margin-top: 56px; gap: 32px;">
+              <div class="card">
+                <div class="num">CONSTRAINT · 01</div>
+                <h3>Clinicians can't scale themselves.</h3>
+                <p>A typical caseload is 20–40 patients. Per-patient between-session attention beyond a single short message is not viable on standard reimbursement rates.</p>
+              </div>
+              <div class="card">
+                <div class="num">CONSTRAINT · 02</div>
+                <h3>Existing tools are wrong-shaped.</h3>
+                <p>Self-help apps don't know your treatment plan. Symptom-trackers record but don't intervene. Always-on monitoring crosses a line patients are right to defend.</p>
+              </div>
+              <div class="card">
+                <div class="num">CONSTRAINT · 03</div>
+                <h3>Privacy is structurally undersolved.</h3>
+                <p>Patients won't be honest if they think the therapist sees everything. Therapists won't engage if they can't trust the data. The field has no widely adopted answer for "how do we share <em class="serif">just enough</em>?"</p>
+              </div>
+              <div class="card">
+                <div class="num">CONSTRAINT · 04</div>
+                <h3>The honest claim is a hard sell.</h3>
+                <p>Effect sizes for general digital MH are small (Linardon 2019; Elmer 2025 d=0.06–0.14 on distress). The honest claim — better adherence, earlier deterioration detection — is harder to market and easier to dismiss.</p>
+              </div>
+            </div>
+
+            <p class="body-lg" style="margin-top: 40px; max-width: 1700px; color: var(--ink-2);">
+              <strong style="color:var(--ink-0);">What's newly tractable:</strong>
+              LLMs that can hold a clinician-personalized therapeutic conversation;
+              local-first cryptography that genuinely keeps secrets on-device;
+              a regulatory category (SaMD, prescription DTx) that supports a clinician-prescribed model.
+            </p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>06 · The Problem</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       8. WHAT WE'RE NOT CLAIMING
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="What we're not claiming">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Honesty &amp; regulatory guardrails</span>
+          <span class="right">07 · Position</span>
+        </div>
+
+        <div class="col grow center" style="justify-content:center;">
+          <div style="max-width: 1500px;">
+            <div class="eyebrow">To stay honest and to keep the regulatory path clean</div>
+            <h2 class="display-md" style="margin-bottom: 48px;">
+              The claim is a <span class="accent">force-multiplier on the clinician.</span><br/>
+              <span class="muted">Not a replacement for the clinician.</span>
+            </h2>
+
+            <div class="claim-row no">
+              <div class="mark">NO</div>
+              <div class="text">We do <b>not</b> claim the app reduces depression or anxiety symptoms <em class="serif">on its own</em>.</div>
+            </div>
+            <div class="claim-row no">
+              <div class="mark">NO</div>
+              <div class="text">We do <b>not</b> claim it substitutes for therapy.</div>
+            </div>
+            <div class="claim-row no">
+              <div class="mark">NO</div>
+              <div class="text">We do <b>not</b> claim 24/7 AI counseling.</div>
+            </div>
+            <div class="claim-row yes">
+              <div class="mark">YES</div>
+              <div class="text">We <b>do</b> claim better adherence to clinician-prescribed work, support through prescribed activities, earlier deterioration detection, and lower friction in the loop the literature already validates.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>07 · Position</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       9. THE VISION (divider)
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="The vision">
+      <div class="divider">
+        <div>
+          <div class="eyebrow">The core vision</div>
+          <h2 class="display-lg">
+            We build the infrastructure for the<br/>
+            <span class="accent">between-visit half of care.</span>
+          </h2>
+          <p class="body-lg">
+            The clinician writes the plan and shapes the channel. The channel speaks in their voice.
+            The patient's data stays under the patient's control. Inside that frame, Tend helps the patient
+            execute, decides what to escalate, and feeds the right signal back to the clinician —
+            without adding work for the clinician.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       10. THREE PRINCIPLES
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Three principles">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The core vision</span>
+          <span class="right">08 · The Vision</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 16px; gap: 40px; justify-content: center;">
+          <div>
+            <div class="eyebrow">Three principles · everything follows</div>
+            <h2 class="display-md">The frame the system never violates.</h2>
+          </div>
+
+          <div class="grid-3" style="gap: 24px;">
+            <div class="card">
+              <div class="num">PRINCIPLE · 01</div>
+              <h3>The clinician is the lead.</h3>
+              <p>Tend is a co-therapist, not a competing one. Every behavior of the system either executes the clinician's plan, supports the patient inside that plan, or surfaces a signal the clinician asked to see. <b>The system has no independent treatment opinion.</b></p>
+              <p style="margin-top: 14px; color: var(--ink-2); font-size: 17px;"><em class="serif">No extra work for the clinician — if it costs them more time than it saves, the platform fails.</em></p>
+            </div>
+            <div class="card">
+              <div class="num">PRINCIPLE · 02</div>
+              <h3>The patient owns their data.</h3>
+              <p>Raw conversation, in-the-moment notes, and detailed logs live <b>on the patient's device</b>. What flows up to the clinician is only what the patient has approved. Patient-facing context is only what the clinician explicitly shared down.</p>
+              <p style="margin-top: 14px; color: var(--ink-2); font-size: 17px;"><em class="serif">A signal floor — at minimum, on-track / off-track always flows up.</em></p>
+            </div>
+            <div class="card">
+              <div class="num">PRINCIPLE · 03</div>
+              <h3>Pull-first, with directed push.</h3>
+              <p>No surveillance prompts. No "how are you doing?" pings. Notifications exist only for things the patient and clinician explicitly agreed to be reminded of — an exposure window, a med time, a journal cue.</p>
+              <p style="margin-top: 14px; color: var(--ink-2); font-size: 17px;"><em class="serif">Empirically validated by Elmer 2025: pull-first beats inferred-distress.</em></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>08 · The Vision</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       11. ARCHITECTURE OVERVIEW — 5 components
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Architecture">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Solution architecture</span>
+          <span class="right">09 · Architecture</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 16px; gap: 36px; justify-content: center;">
+          <div>
+            <div class="eyebrow">Five core components, one plug-in layer</div>
+            <h2 class="display-md">
+              The same product across specialties.<br/>
+              <span class="muted">Only the contents of the boxes change.</span>
+            </h2>
+          </div>
+
+          <div class="rail-5">
+            <div class="step">
+              <div class="n">01 · CONTRACT</div>
+              <div class="t">Prescription model</div>
+              <div class="d">Discrete tasks, continuous behaviors, constraints, check-in cadence, escalation thresholds, AI-assistance level. Authored in the clinician portal.</div>
+            </div>
+            <div class="step">
+              <div class="n">02 · CHANNEL</div>
+              <div class="t">Conversational interface</div>
+              <div class="d">LLM-mediated patient channel. Knows only what the clinician shared. Speaks in a tone the clinician tuned — optionally cloned voice.</div>
+            </div>
+            <div class="step">
+              <div class="n">03 · TRUST</div>
+              <div class="t">Local-first &amp; share-up</div>
+              <div class="d">Conversation and detailed logs live on-device, encrypted. A separate local service extracts shareable summaries the patient explicitly approves.</div>
+            </div>
+            <div class="step">
+              <div class="n">04 · SIGNAL</div>
+              <div class="t">Adherence tracking</div>
+              <div class="d">Objective where possible, self-reported where not. Feeds the patient's progress view and the clinician's adherence signal.</div>
+            </div>
+            <div class="step">
+              <div class="n">05 · GLANCE</div>
+              <div class="t">Clinician dashboard</div>
+              <div class="d">Glance-readable before a session. Adherence, prescription, themes the patient surfaced, escalation events. <em class="serif">Pre-session brief, not a new inbox.</em></div>
+            </div>
+          </div>
+
+          <p class="body-lg" style="max-width: 1700px; color: var(--ink-2);">
+            On top of these five, a thin <b style="color:var(--ink-0);">per-specialty plug-in</b> tailors the contents:
+            mental health uses exposures, thought records, PHQ-9 / GAD-7. Nutrition uses meal plans and weight / labs.
+            Drug adherence uses regimens and pharmacy data. <em class="serif">Same architecture, different boxes.</em>
+          </p>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>09 · Architecture</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       12. COMPONENT 1 — Prescription model (clinician authoring screen)
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="01 · Prescription model">
+      <div class="slide" style="padding: 56px 96px;">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Component 01 · Prescription model</span>
+          <span class="right">10 · Architecture</span>
+        </div>
+
+        <div class="twocol" style="margin-top: 24px;">
+          <div class="copy">
+            <div class="eyebrow">01 · The contract</div>
+            <h2>The plan is a <span class="accent">structured object,</span><br/>not a paragraph.</h2>
+            <p class="lead">
+              Discrete tasks. Continuous behaviors. Constraints. Check-in cadence.
+              Escalation thresholds. AI-assistance level — explicitly per patient.
+            </p>
+            <ul class="feat">
+              <li><span><b>Authored in the clinician portal.</b> Optionally drafted by AI from session notes — clinician edits and signs every field.</span></li>
+              <li><span><b>Per-patient AI gating.</b> Clinician decides whether Maya may guide Chen through grounding, exposures, or hand off to a human protocol on crisis.</span></li>
+              <li><span><b>The contract the rest of the system serves.</b> Conversation, signals, and dashboard all read the prescription as their source of truth.</span></li>
+              <li><span><span class="muted">Cross-specialty:</span> meal plan + cadence (nutrition); regimen + with/without food (drug adherence).</span></li>
+            </ul>
+          </div>
+          <div class="shot-wrap">
+            <div class="shot contain" style="width:100%; height: 800px;">
+              <img src="../mockups/clinician-prescription-authoring.png" alt="Clinician prescription authoring · session notes → AI draft → review">
+              <div class="caption"><span class="mono">Clinician · Prescription authoring</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>10 · Architecture</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       13. COMPONENT 2 — Conversational interface (Maya)
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="02 · Conversational interface">
+      <div class="slide" style="padding: 56px 96px;">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Component 02 · Conversational interface</span>
+          <span class="right">11 · Architecture</span>
+        </div>
+
+        <div class="twocol mirror" style="margin-top: 24px;">
+          <div class="shot-wrap">
+            <div class="shot contain" style="width:100%; height: 800px;">
+              <img src="../mockups/patient-today-and-maya.png" alt="Patient app — Today (pull-first) and Maya chat">
+              <div class="caption"><span class="mono">Patient · Today &amp; Maya</span></div>
+            </div>
+          </div>
+          <div class="copy">
+            <div class="eyebrow">02 · The channel</div>
+            <h2>A <span class="accent">co-therapist</span> in the patient's pocket.<br/>Not a chatbot.</h2>
+            <p class="lead">
+              Maya knows only what the clinician shared. She walks the patient through prescribed activities,
+              answers scope-appropriate questions, and de-escalates distress without overstepping.
+            </p>
+            <ul class="feat">
+              <li><span><b>Clinician-tuned tone.</b> With consent, voice and persona modeled on the clinician themselves.</span></li>
+              <li><span><b>Continuity-as-treatment.</b> The therapeutic alliance staying present in the gap is itself part of the mechanism (Orlinsky/Geller intersession process).</span></li>
+              <li><span><b>Pull-first home screen.</b> Today shows pending shares + plan items — never a "how are you?" ping.</span></li>
+              <li><span><span class="muted">Cross-specialty:</span> "What works at this restaurant?" / "I forgot my morning dose — take now or skip?"</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>11 · Architecture</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       14. COMPONENT 3 — Local-first + share-up
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="03 · Local-first &amp; share-up">
+      <div class="slide" style="padding: 56px 96px;">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Component 03 · Local-first + permissioned share-up</span>
+          <span class="right">12 · Architecture</span>
+        </div>
+
+        <div class="col grow" style="margin-top: 20px; gap: 24px; min-height: 0;">
+          <div class="row gap-48" style="align-items: end;">
+            <div class="col" style="flex: 0 0 620px;">
+              <div class="eyebrow">03 · The trust layer</div>
+              <h2 class="display-md" style="letter-spacing:-0.018em;">
+                Conversations live <span class="accent">on-device.</span><br/>
+                Only what the patient approves leaves.
+              </h2>
+            </div>
+            <p class="body-lg grow" style="max-width: 880px; color: var(--ink-1);">
+              A separate, narrower-scoped local service extracts shareable summaries and signals.
+              The patient sees, edits, and explicitly approves before <em class="serif">anything</em>
+              syncs to the clinician portal. Every share is reversible until the next session.
+            </p>
+          </div>
+
+          <div class="grid-2 grow" style="min-height: 0; gap: 28px;">
+            <div class="shot contain" style="height: 620px;">
+              <img src="../mockups/patient-share-consent.png" alt="Patient · Share with Dr. Levin — bullet-level consent moment">
+              <div class="caption"><span class="mono">Patient · Share with Dr. Levin</span></div>
+            </div>
+            <div class="shot contain" style="height: 620px;">
+              <img src="../mockups/clinician-inbox-shares.png" alt="Clinician · Inbox of shares">
+              <div class="caption"><span class="mono">Clinician · Inbox of shares</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>12 · Architecture</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       15. COMPONENT 4 — Adherence tracking
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="04 · Adherence tracking">
+      <div class="slide" style="padding: 56px 96px;">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Component 04 · Adherence &amp; compliance</span>
+          <span class="right">13 · Architecture</span>
+        </div>
+
+        <div class="twocol" style="margin-top: 24px;">
+          <div class="copy">
+            <div class="eyebrow">04 · The signal</div>
+            <h2>Did the prescribed thing<br/><span class="accent">happen</span> — and how?</h2>
+            <p class="lead">
+              Objective where possible. Self-reported where not.
+              Two outputs: the patient's progress view and the clinician's adherence signal.
+            </p>
+            <ul class="feat">
+              <li><span><b>Patient-facing.</b> Plan view of prescribed practices; tracking view that shows the rhythm — "mornings landed, evenings drifted."</span></li>
+              <li><span><b>Clinician-facing.</b> A 14-day adherence number, per-practice rhythm, and the patient's own framing of why a slip happened.</span></li>
+              <li><span><b>Engagement, not gamification.</b> No streaks, no badges, no clinical theater. Patients are not the user we optimize against.</span></li>
+              <li><span><span class="muted">Cross-specialty:</span> integrate with smart pill bottles / HMO refill data / Apple Health where the signal can be pulled, not asked.</span></li>
+            </ul>
+          </div>
+          <div class="shot-wrap">
+            <div class="shot contain" style="width:100%; height: 800px;">
+              <img src="../mockups/patient-plan-and-tracking.png" alt="Patient · Plan and How you're tracking">
+              <div class="caption"><span class="mono">Patient · Plan + How you're tracking</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>13 · Architecture</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       16. COMPONENT 5 — Clinician dashboard
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="05 · Clinician dashboard">
+      <div class="slide" style="padding: 56px 96px;">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Component 05 · Clinician dashboard</span>
+          <span class="right">14 · Architecture</span>
+        </div>
+
+        <div class="twocol mirror" style="margin-top: 24px;">
+          <div class="shot-wrap">
+            <div class="shot contain" style="width:100%; height: 800px;">
+              <img src="../mockups/clinician-patient-overview.png" alt="Clinician · Patient panel · Chen Avraham overview">
+              <div class="caption"><span class="mono">Clinician · Patient panel</span></div>
+            </div>
+          </div>
+          <div class="copy">
+            <div class="eyebrow">05 · The glance</div>
+            <h2>Readable in <span class="accent">under a minute.</span><br/>Actionable in another.</h2>
+            <p class="lead">
+              A pre-session brief for a busy clinician — not a new inbox.
+              Per-patient: adherence, current prescription, themes the patient surfaced, escalation events.
+            </p>
+            <ul class="feat">
+              <li><span><b>At-a-glance: 64% adherence, within plan.</b> Sleep at 4.2h flagged. Two episodes shared in the last 7 days.</span></li>
+              <li><span><b>Pre-session note draft.</b> Chen completed 2 of 4 imaginal exposures, declined Maya mid-way on one — flagged as a deliberate choice consistent with his preference.</span></li>
+              <li><span><b>The surface that makes the platform prescribable.</b> If using the dashboard costs more time than it saves, Tend fails — regardless of how the patient side works.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>14 · Architecture</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       17. PROFILE — transparency surface
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Profile · Transparency">
+      <div class="slide" style="padding: 56px 96px;">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Patient · Transparency surface</span>
+          <span class="right">15 · Architecture</span>
+        </div>
+
+        <div class="twocol" style="margin-top: 24px;">
+          <div class="copy">
+            <div class="eyebrow">A surface, not a setting</div>
+            <h2>"What the app<br/>knows about <span class="accent">you</span>."</h2>
+            <p class="lead">
+              Everything Maya can see, in one place. Edits propagate.
+              Two sections: what came down from the clinician, and what stays local on the device.
+            </p>
+            <ul class="feat">
+              <li><span><b>From Dr. Levin.</b> Diagnosis &amp; phase. Trigger themes. Grounding the patient prefers. What Maya may guide on.</span></li>
+              <li><span><b>From you.</b> Sleep average. Episodes logged. Mood check-ins. <em class="serif">Things you don't want to talk about.</em></span></li>
+              <li><span><b>Why this matters.</b> The honesty that makes the clinical signal worth anything depends on the patient believing — and verifying — that the boundary is real.</span></li>
+            </ul>
+          </div>
+          <div class="shot-wrap">
+            <div class="shot contain" style="width:100%; height: 820px;">
+              <img src="../mockups/patient-profile-transparency.png" alt="Patient · Profile — what the app knows about you">
+              <div class="caption"><span class="mono">Patient · Profile</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>15 · Architecture</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       18. NOTES ON MENTAL HEALTH
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Notes on mental health">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Notes on mental health</span>
+          <span class="right">16 · MH-specific</span>
+        </div>
+
+        <div class="col grow center" style="justify-content:center;">
+          <div style="max-width: 1700px;">
+            <div class="eyebrow">Two things that don't transfer cleanly</div>
+            <h2 class="display-md">
+              MH carries weight the architecture<br/>
+              has to <span class="accent">explicitly hold.</span>
+            </h2>
+
+            <div class="grid-2" style="margin-top: 56px; gap: 32px;">
+              <div class="card">
+                <div class="num">MH-SPECIFIC · 01</div>
+                <h3>Continuity-as-treatment.</h3>
+                <p>The clinician's voice staying present in the patient's life between visits is itself part of the therapeutic mechanism — working alliance, internalization, intersession process (Orlinsky/Geller).</p>
+                <p style="margin-top: 14px; color: var(--ink-2); font-size: 17px;"><em class="serif">Outsized design weight on persona, voice, narrative continuity. Possible Delphi-style cooperation for cloned voice.</em></p>
+              </div>
+              <div class="card">
+                <div class="num">MH-SPECIFIC · 02</div>
+                <h3>The "is this patient stable enough?" gating decision.</h3>
+                <p>Between-session AI conversation may be wrong for a patient working on tolerating distress without external regulation — or for one with dependency tendencies.</p>
+                <p style="margin-top: 14px; color: var(--ink-2); font-size: 17px;"><em class="serif">Built into the prescription model from day one — clinician can enable, restrict, or fully disable Maya per patient.</em></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>16 · MH-specific</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       19. CROSS-SPECIALTY TABLE
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Cross-specialty translation">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Cross-specialty translation</span>
+          <span class="right">17 · Generalization</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 16px; gap: 36px; justify-content: center;">
+          <div>
+            <div class="eyebrow">The same primitive — five slots, filled differently</div>
+            <h2 class="display-md">
+              The <em class="serif">vision is unified.</em><br/>
+              The contents of the boxes vary.
+            </h2>
+          </div>
+
+          <table class="xtbl">
+            <thead>
+              <tr>
+                <th style="width: 18%;">Concept</th>
+                <th style="width: 27%;">Mental health</th>
+                <th style="width: 27%;">Nutrition</th>
+                <th style="width: 28%;">Drug adherence</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="lead">Inter-session work</td>
+                <td>Exposures, thought records, BA, journaling</td>
+                <td>Meal-plan adherence, logging, prep</td>
+                <td>Taking the regimen on time, under conditions</td>
+              </tr>
+              <tr>
+                <td class="lead">Symptoms</td>
+                <td>Panic, rumination, dissociation, urges</td>
+                <td>Cravings, binge urges, energy crashes, GI flares</td>
+                <td>Side effects + breakthrough symptoms</td>
+              </tr>
+              <tr>
+                <td class="lead">Deviation</td>
+                <td><em class="serif">"Did exposure with safety behaviors"</em> · skipped</td>
+                <td>Off-plan meal, skipped log, sustained unhealthy eating</td>
+                <td>Missed dose, doubled dose, missed refill</td>
+              </tr>
+              <tr>
+                <td class="lead">Deterioration</td>
+                <td>PHQ-9 / GAD-7 / SPIN climbing; avoidance broadens</td>
+                <td>Weight, labs, energy, GI, ED behaviors regressing</td>
+                <td>Underlying condition recurring (BP, glucose, infection)</td>
+              </tr>
+              <tr>
+                <td class="lead">Objective signal</td>
+                <td>Mostly self-report + SUDS</td>
+                <td>Photo log + scale + occasional labs</td>
+                <td><b>Pharmacy / smart pillbox / refill data</b></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>17 · Generalization</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       20. THE WEDGE DILEMMA — three candidates
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="The wedge dilemma">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The wedge dilemma</span>
+          <span class="right">18 · Strategy</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 16px; gap: 36px; justify-content: center;">
+          <div>
+            <div class="eyebrow">Same product · three candidate v1 paths</div>
+            <h2 class="display-md">
+              Which specialty <span class="accent">proves the platform fastest?</span>
+            </h2>
+            <p class="body-lg" style="max-width: 1500px; margin-top: 16px; color: var(--ink-2);">
+              Mental health is where the gap is most acute and our domain authority is strongest —
+              but provability is the hardest. Two cleaner-signal alternatives are on the table.
+            </p>
+          </div>
+
+          <div class="grid-3" style="gap: 22px;">
+            <div class="wedge starter">
+              <div class="tag">Wedge · A · Mental health</div>
+              <h3>Biggest gap.<br/>Hardest to prove.</h3>
+              <div class="row-pair">
+                <div><div class="k">Strength</div><div class="v">Continuity-as-treatment makes the architecture most differentiated. Domain authority is here.</div></div>
+                <div><div class="k">Risk</div><div class="v">Effect sizes are small; regulatory bar is high; outcome cycles are long.</div></div>
+              </div>
+              <div class="takeaway">Where we're starting — that's the wedge in the brand. Open question on whether it's the wedge for proof.</div>
+            </div>
+            <div class="wedge">
+              <div class="tag">Wedge · B · Nutrition</div>
+              <h3>Cleaner endpoints.<br/>Faster pilot.</h3>
+              <div class="row-pair">
+                <div><div class="k">Strength</div><div class="v">Weight, labs, photo logs. Behavioral signal is short of pharmacy data but well above MH self-report.</div></div>
+                <div><div class="k">Risk</div><div class="v">Continuity story is narrower. Less "co-therapist," more "compliant meal companion."</div></div>
+              </div>
+              <div class="takeaway">If we need to be provable to get licensed, this is the path that gets there fastest.</div>
+            </div>
+            <div class="wedge">
+              <div class="tag">Wedge · C · Drug adherence</div>
+              <h3>Cleanest signal.<br/>Reimbursement story.</h3>
+              <div class="row-pair">
+                <div><div class="k">Strength</div><div class="v">Refill data + smart caps + pharmacy integration. Israeli HMOs are mandatory — clean B2B sale.</div></div>
+                <div><div class="k">Risk</div><div class="v">Narrowest conversational story. Closer to a smart pillbox than a co-therapist — under-uses the architecture.</div></div>
+              </div>
+              <div class="takeaway">Strongest commercial path; weakest brand fit. A possible v1, a possible v2-after-MH.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>18 · Strategy</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       21. SLIM v0 POC
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="The slim v0">
+      <div class="slide">
+        <div class="header">
+          <span class="mark" style="font-family:var(--font-serif);font-style:italic;font-weight:500;font-size:24px;color:var(--ink-0);">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The slim v0</span>
+          <span class="right">19 · v0</span>
+        </div>
+
+        <div class="col grow center" style="justify-content:center;">
+          <div style="max-width: 1700px;">
+            <div class="eyebrow">What proves the platform fastest</div>
+            <h2 class="display-md">
+              Compliance · execution · signal.<br/>
+              <span class="muted">Everything else stacks on top.</span>
+            </h2>
+
+            <div class="grid-3" style="margin-top: 56px; gap: 24px;">
+              <div class="card">
+                <div class="num">v0 · 01 · COMPLIANCE</div>
+                <h3>Did the prescribed thing happen?</h3>
+                <p>Universal across specialties: meds, exercises, exposures, sleep hygiene, journaling. Objective where possible, self-reported where not.</p>
+              </div>
+              <div class="card">
+                <div class="num">v0 · 02 · TRIAGE</div>
+                <h3>The patient hits a moment not covered by the plan.</h3>
+                <p>"I'm spiraling at 2am, what did we practice?" / "Can I substitute this food?" / "BP is 160 — extra dose?" Maya answers at the right acuity, escalates outside it.</p>
+              </div>
+              <div class="card">
+                <div class="num">v0 · 03 · SIGNAL</div>
+                <h3>Pre-session brief to the clinician.</h3>
+                <p>At minimum, on-track / off-track. Where the patient permits, summary, themes, escalation events. <em class="serif">Glance-readable. Pre-session, not new inbox.</em></p>
+              </div>
+            </div>
+
+            <p class="body-lg" style="margin-top: 56px; max-width: 1700px; color: var(--ink-2);">
+              <strong style="color:var(--ink-0);">Not in v0:</strong>
+              cloned-voice persona, deep adherence integrations (smart pillboxes, HMO pharmacy data),
+              specialty plug-ins beyond MH, advanced escalation tree. <em class="serif">Each is a deliberate v1+ stack.</em>
+            </p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div>Tend · Between-visit care</div>
+          <div>19 · v0</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────────────────────────────────────────
+       22. CLOSING
+       ─────────────────────────────────────────────────────────── -->
+    <section data-label="Close">
+      <div class="cover" style="background: radial-gradient(1400px 900px at 15% 85%, oklch(from var(--teal) l c h / 0.10), transparent 60%), var(--bg-0);">
+        <div class="brand">
+          <span class="mark" style="font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 28px; width: 44px; height: 44px; display: grid; place-items: center; background: var(--teal-bg); color: var(--teal); border-radius: 10px; border: 1px solid oklch(from var(--teal) l c h / 0.25);">t</span>
+          <span style="font-family: var(--font-serif); font-style: italic; font-weight: 500; color: var(--ink-0);">Tend</span>
+          <span class="dot" style="width:4px;height:4px;border-radius:50%;background:var(--ink-3);margin:0 4px;"></span>
+          <span style="font-family:var(--font-mono); font-size:13px; letter-spacing:0.20em; text-transform:uppercase; color:var(--ink-2);">Closing</span>
+        </div>
+
+        <div style="align-self: center; max-width: 1600px;">
+          <div class="quote">
+            We don't make you less depressed.<br/>
+            We <span class="accent">operationalize the primitive</span><br/>
+            your clinician already knows<br/>
+            drives outcomes.
+          </div>
+          <div class="quote-attr">— The honest framing</div>
+        </div>
+
+        <div class="meta">
+          <div class="sig">
+            <span>What's next</span><b>Clinical-advisor pilots · Israeli HMO conversation</b>
+            <span>Where to find me</span><b>Yaniv Kaplan · yaniv@roomone.ventures</b>
+          </div>
+          <div class="mono muted">Tend · v0 · 2026</div>
+        </div>
+      </div>
+    </section>
+
+  </deck-stage>
+
+  <script src="deck-stage.js"></script>
+
+</body>
+
+</html>

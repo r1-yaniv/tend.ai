@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Tend — v2 (cover + 10)</title>
+  <meta name="viewport" content="width=1920, initial-scale=1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-0: oklch(0.96 0.008 80);
+      --bg-1: oklch(0.94 0.010 80);
+      --bg-2: oklch(0.91 0.012 80);
+      --bg-3: oklch(0.88 0.014 80);
+      --paper: oklch(0.97 0.008 80);
+
+      --line-1: oklch(0.86 0.012 80);
+      --line-2: oklch(0.78 0.014 80);
+
+      --ink-0: oklch(0.20 0.012 60);
+      --ink-1: oklch(0.34 0.012 60);
+      --ink-2: oklch(0.50 0.010 60);
+      --ink-3: oklch(0.62 0.008 60);
+
+      --teal: oklch(0.45 0.06 175);
+      --teal-soft: oklch(0.78 0.05 175);
+      --teal-bg: oklch(0.92 0.025 175);
+
+      --warn: oklch(0.58 0.14 50);
+      --warn-soft: oklch(0.92 0.05 60);
+      --safe: oklch(0.55 0.12 145);
+
+      --font-serif: 'Fraunces', ui-serif, Georgia, serif;
+      --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+      --radius-md: 12px;
+      --radius-lg: 20px;
+    }
+
+    html, body { margin: 0; padding: 0; background: #000; }
+    body { font-family: var(--font-sans); }
+
+    deck-stage section {
+      background: var(--bg-0);
+      color: var(--ink-0);
+      font-size: 22px;
+      line-height: 1.5;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 64px 88px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex; align-items: center; gap: 14px;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 22px;
+      color: var(--ink-1);
+    }
+    .header .mark {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: 24px;
+      color: var(--ink-0);
+    }
+    .header .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--ink-3); }
+    .header .tag {
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--ink-2);
+      font-style: normal;
+    }
+    .header .right {
+      margin-left: auto;
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--ink-2);
+    }
+    .footer {
+      margin-top: auto;
+      display: flex; justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--line-1);
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: 0.10em;
+      color: var(--ink-3);
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 13px; letter-spacing: 0.20em;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 24px;
+    }
+    .display-xl {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 132px;
+      letter-spacing: -0.025em; line-height: 0.98;
+      color: var(--ink-0);
+    }
+    .display-lg {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 92px;
+      letter-spacing: -0.022em; line-height: 1.04;
+      color: var(--ink-0);
+    }
+    .display-md {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 56px;
+      letter-spacing: -0.016em; line-height: 1.1;
+      color: var(--ink-0);
+    }
+    .kicker {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 32px;
+      line-height: 1.35; color: var(--ink-1);
+    }
+    .body-lg { font-size: 24px; line-height: 1.55; color: var(--ink-1); }
+    .body { font-size: 21px; line-height: 1.55; color: var(--ink-1); }
+    em.serif { font-family: var(--font-serif); font-style: italic; color: var(--ink-0); }
+
+    .accent { color: var(--teal); }
+    .warn { color: var(--warn); }
+    .muted { color: var(--ink-2); }
+    .mono { font-family: var(--font-mono); }
+
+    .row { display: flex; }
+    .col { display: flex; flex-direction: column; }
+    .grow { flex: 1; min-width: 0; min-height: 0; }
+    .gap-16 { gap: 16px; } .gap-24 { gap: 24px; } .gap-32 { gap: 32px; } .gap-48 { gap: 48px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px;
+      background: var(--teal-bg); color: var(--teal);
+      border: 1px solid oklch(from var(--teal) l c h / 0.3);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: 0.16em;
+      text-transform: uppercase; font-weight: 600;
+    }
+    .badge .pulse {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--teal);
+      animation: pulse 2.4s ease-out infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 oklch(from var(--teal) l c h / 0.55); }
+      70% { box-shadow: 0 0 0 10px oklch(from var(--teal) l c h / 0); }
+      100% { box-shadow: 0 0 0 0 oklch(from var(--teal) l c h / 0); }
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-lg);
+      padding: 30px 32px;
+    }
+    .card .num {
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: 0.18em;
+      color: var(--teal); margin-bottom: 14px;
+    }
+    .card h3 {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 32px;
+      margin: 0 0 12px;
+      letter-spacing: -0.014em; line-height: 1.16;
+      color: var(--ink-0);
+    }
+    .card p {
+      margin: 0;
+      font-size: 19px; line-height: 1.55;
+      color: var(--ink-1);
+    }
+
+    .stat {
+      display: flex; flex-direction: column; gap: 4px;
+      padding: 24px 26px;
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-lg);
+    }
+    .stat .n {
+      font-family: var(--font-serif);
+      font-size: 64px; font-weight: 400;
+      letter-spacing: -0.025em; color: var(--teal);
+      line-height: 1;
+    }
+    .stat .n .u {
+      font-size: 26px; color: var(--ink-2);
+      margin-left: 4px; font-family: var(--font-sans);
+    }
+    .stat .l {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--ink-2);
+      margin-top: 6px;
+    }
+    .stat .src {
+      font-family: var(--font-mono);
+      font-size: 10px; color: var(--ink-3);
+      margin-top: 4px;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 22px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 18px; }
+
+    .feat { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 14px; }
+    .feat li {
+      display: grid; grid-template-columns: 24px 1fr;
+      gap: 14px; align-items: start;
+      font-size: 21px; line-height: 1.5;
+      color: var(--ink-1);
+    }
+    .feat li::before {
+      content: '';
+      width: 8px; height: 8px;
+      margin-top: 12px; margin-left: 6px;
+      border-radius: 1px;
+      transform: rotate(45deg);
+      background: var(--teal);
+      box-shadow: 0 0 0 3px oklch(from var(--teal) l c h / 0.18);
+    }
+    .feat li b { color: var(--ink-0); font-weight: 600; }
+
+    .shot {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow:
+        0 1px 2px oklch(0 0 0 / 0.04),
+        0 12px 32px oklch(0 0 0 / 0.08),
+        0 30px 80px oklch(0 0 0 / 0.06),
+        inset 0 0 0 1px var(--line-1);
+    }
+    .shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .shot.contain img { object-fit: contain; background: var(--paper); }
+    .shot .caption {
+      position: absolute; left: 14px; bottom: 14px;
+      padding: 7px 12px;
+      background: oklch(0.18 0.01 60 / 0.85);
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.08em;
+      color: oklch(0.95 0.005 80);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .twocol {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 48px;
+      flex: 1;
+      align-items: stretch;
+      min-height: 0;
+    }
+    .twocol .copy { display: flex; flex-direction: column; justify-content: center; }
+    .twocol .copy h2 {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 56px;
+      letter-spacing: -0.018em; line-height: 1.06;
+      margin: 14px 0 22px;
+      color: var(--ink-0);
+    }
+    .twocol .copy .lead {
+      color: var(--ink-0);
+      font-size: 24px; font-weight: 400;
+      font-family: var(--font-serif);
+      line-height: 1.4;
+      max-width: 600px;
+    }
+    .twocol .shot-wrap {
+      display: flex; align-items: center; justify-content: center;
+      min-width: 0; min-height: 0;
+    }
+    .twocol .shot { width: 100%; max-height: 100%; }
+    .twocol.mirror { grid-template-columns: 1.3fr 1fr; }
+
+    /* Cover */
+    .cover {
+      position: absolute; inset: 0;
+      display: grid; grid-template-rows: auto 1fr auto;
+      padding: 64px 88px;
+      background:
+        radial-gradient(1400px 900px at 85% 15%, oklch(from var(--teal) l c h / 0.10), transparent 60%),
+        radial-gradient(1000px 700px at 15% 95%, oklch(from var(--warn) l c h / 0.06), transparent 55%),
+        var(--bg-0);
+    }
+    .cover .brand { display: flex; align-items: center; gap: 14px; font-family: var(--font-serif); font-style: italic; font-size: 22px; color: var(--ink-1); }
+    .cover .brand .markbox {
+      font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 28px;
+      width: 44px; height: 44px;
+      display: grid; place-items: center;
+      background: var(--teal-bg); color: var(--teal);
+      border-radius: 10px;
+      border: 1px solid oklch(from var(--teal) l c h / 0.25);
+    }
+    .cover .tagline {
+      margin-top: 28px; max-width: 1500px;
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 32px;
+      line-height: 1.4; color: var(--ink-1);
+    }
+    .cover .tagline strong { color: var(--ink-0); font-weight: 500; }
+    .cover .meta {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      font-family: var(--font-mono);
+      font-size: 13px; letter-spacing: 0.12em;
+      color: var(--ink-3);
+    }
+    .cover .sig { display: grid; grid-template-columns: auto auto; gap: 4px 16px; color: var(--ink-2); }
+    .cover .sig b { color: var(--ink-0); font-weight: 500; }
+
+    /* Causal arc */
+    .arc {
+      display: grid; grid-template-columns: repeat(7, auto);
+      gap: 16px; align-items: stretch; justify-content: start;
+    }
+    .arc .node {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+    }
+    .arc .node .kind {
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--ink-3);
+      margin-bottom: 6px;
+    }
+    .arc .node .lbl {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 22px;
+      color: var(--ink-0);
+      letter-spacing: -0.012em; line-height: 1.18;
+    }
+    .arc .node.warn-node {
+      background: var(--warn-soft);
+      border-color: oklch(from var(--warn) l c h / 0.3);
+    }
+    .arc .node.warn-node .lbl { color: var(--warn); }
+    .arc .arr {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink-3); font-family: var(--font-mono); font-size: 18px;
+    }
+
+    /* 5-rail (components) */
+    .rail-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+    .rail-5 .step {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-md);
+      padding: 28px 26px;
+      min-height: 240px;
+      display: flex; flex-direction: column;
+    }
+    .rail-5 .step .n {
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: 0.16em;
+      color: var(--teal); margin-bottom: 14px;
+    }
+    .rail-5 .step .t {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 30px;
+      color: var(--ink-0); line-height: 1.15;
+      letter-spacing: -0.014em; margin-bottom: 14px;
+    }
+    .rail-5 .step .d {
+      font-size: 18px; color: var(--ink-1); line-height: 1.5;
+    }
+
+    /* Cross-specialty cards */
+    .cs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .cs-card {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-lg);
+      padding: 30px 32px 28px;
+      display: flex; flex-direction: column;
+    }
+    .cs-card.starter { background: var(--teal-bg); border-color: oklch(from var(--teal) l c h / 0.3); }
+    .cs-card-head {
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line-1);
+    }
+    .cs-tag {
+      font-family: var(--font-mono);
+      font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .cs-card.starter .cs-tag { color: var(--teal); }
+    .cs-name {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 36px;
+      color: var(--ink-0);
+      letter-spacing: -0.014em; line-height: 1.1;
+      margin: 8px 0 0;
+    }
+    .cs-list { display: flex; flex-direction: column; gap: 16px; margin: 0; padding: 0; }
+    .cs-row { display: flex; flex-direction: column; gap: 4px; }
+    .cs-row-k {
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+    .cs-row-v {
+      font-size: 17px; line-height: 1.45;
+      color: var(--ink-1);
+    }
+    .cs-row-v b { color: var(--ink-0); font-weight: 600; }
+    .cs-row-v em.serif { color: var(--ink-0); }
+
+    /* Wedge */
+    .wedge {
+      background: var(--paper);
+      border: 1px solid var(--line-1);
+      border-radius: var(--radius-lg);
+      padding: 24px 26px;
+      display: flex; flex-direction: column;
+    }
+    .wedge .tag {
+      font-family: var(--font-mono);
+      font-size: 10px; letter-spacing: 0.18em;
+      text-transform: uppercase; margin-bottom: 12px;
+      color: var(--ink-3);
+    }
+    .wedge h3 {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 30px;
+      letter-spacing: -0.014em; margin: 0 0 14px;
+      color: var(--ink-0); line-height: 1.06;
+    }
+    .wedge .takeaway {
+      margin-top: auto; padding-top: 14px;
+      border-top: 1px dashed var(--line-2);
+      font-size: 15px; color: var(--ink-1);
+      font-style: italic;
+      font-family: var(--font-serif);
+    }
+    .wedge .body-line {
+      font-size: 16px; color: var(--ink-1); line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .wedge.starter {
+      background: var(--teal-bg);
+      border-color: oklch(from var(--teal) l c h / 0.3);
+    }
+    .wedge.starter .tag { color: var(--teal); }
+
+    /* Quote close */
+    .quote {
+      font-family: var(--font-serif);
+      font-weight: 400; font-size: 56px;
+      line-height: 1.2; letter-spacing: -0.018em;
+      color: var(--ink-0); max-width: 1500px;
+    }
+    .quote::before {
+      content: '\201C';
+      display: block; font-size: 110px;
+      line-height: 0.8; color: var(--teal);
+      margin-bottom: 14px;
+    }
+    .quote-attr {
+      margin-top: 24px;
+      font-family: var(--font-mono);
+      font-size: 12px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--ink-3);
+    }
+  </style>
+</head>
+
+<body>
+
+  <deck-stage width="1920" height="1080">
+
+    <!-- ─── 1. COVER ─── -->
+    <section data-label="Cover">
+      <div class="cover">
+        <div class="brand">
+          <span class="markbox">t</span>
+          <span style="font-family: var(--font-serif); font-style: italic; font-weight: 500; color: var(--ink-0);">Tend</span>
+          <span style="width:4px;height:4px;border-radius:50%;background:var(--ink-3);margin:0 4px;"></span>
+          <span style="font-family:var(--font-mono); font-style:normal; font-size:13px; letter-spacing:0.20em; text-transform:uppercase; color:var(--ink-2);">Between-visit care</span>
+        </div>
+
+        <div style="align-self: end;">
+          <div class="badge"><span class="pulse"></span>The half of care no one is building</div>
+          <h1 class="display-xl" style="margin: 32px 0 0;">
+            The 99% of life<br/>
+            that happens <span class="accent">between visits</span><span class="muted">.</span>
+          </h1>
+          <p class="tagline">
+            Tend is the infrastructure for the half of care that's currently
+            <em class="serif">invisible, unsupported, and unmeasured</em> —
+            <strong>clinician-prescribed, patient-owned, pull-first.</strong>
+          </p>
+        </div>
+
+        <div class="meta">
+          <div class="sig">
+            <span>Prepared by</span><b>RoomOne</b>
+          </div>
+          <div class="mono muted">v0 · 2026</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── 2. PROBLEM (gap + invisible/unsupported/unmeasured combined) ─── -->
+    <section data-label="The problem">
+      <div class="slide">
+        <div class="header">
+          <span class="mark">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The problem</span>
+          <span class="right">01</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 12px; gap: 28px; justify-content: center;">
+          <div>
+            <div class="eyebrow">Outpatient mental health · 1–4 weeks between sessions</div>
+            <h2 class="display-md">
+              99% of the patient's life happens<br/>
+              <span class="accent">between visits</span> — and right now,<br/>
+              that half is <span class="warn">invisible.</span>
+            </h2>
+          </div>
+
+          <div class="grid-3" style="gap: 22px;">
+            <div class="card">
+              <div class="num">UNSUPPORTED</div>
+              <h3>The patient has no scaffolding.</h3>
+              <p>Partial compliance is the default. Deviation drives deterioration. The treatment plan exists but has nowhere to live between Tuesdays.</p>
+            </div>
+            <div class="card" style="background: var(--bg-2);">
+              <div class="num">INVISIBLE</div>
+              <h3>The clinician has no view.</h3>
+              <p>What actually happened in the gap is not observable. The clinician inherits a curated retrospective at the next session, not a continuous picture.</p>
+            </div>
+            <div class="card">
+              <div class="num">UNMEASURED</div>
+              <h3>Self-report is all there is.</h3>
+              <p>Recall bias trims the signal before it arrives. Trends that should trigger action don't surface until the patient has been off-track for weeks.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer"><div>Tend · Between-visit care</div><div>01 · The problem</div></div>
+      </div>
+    </section>
+
+    <!-- ─── 3. VISION + 3 PRINCIPLES ─── -->
+    <section data-label="The vision">
+      <div class="slide">
+        <div class="header">
+          <span class="mark">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The core vision</span>
+          <span class="right">02</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 12px; gap: 36px; justify-content: center;">
+          <div>
+            <div class="eyebrow">The vision · three principles</div>
+            <h2 class="display-md">
+              We build the <span class="accent">infrastructure</span> for<br/>
+              the between-visit half of care.
+            </h2>
+            <p class="kicker" style="max-width: 1500px; margin-top: 22px;">
+              The clinician writes the plan. The channel speaks in their voice.
+              The patient's data stays under the patient's control.
+              <em class="serif">No extra work for the clinician.</em>
+            </p>
+          </div>
+
+          <div class="grid-3" style="gap: 22px;">
+            <div class="card">
+              <div class="num">PRINCIPLE · 01</div>
+              <h3>The clinician is the lead.</h3>
+              <p>Tend is a co-therapist, not a competing one. Every behavior either executes the clinician's plan, supports the patient inside it, or surfaces a signal the clinician asked to see. <b>No independent treatment opinion.</b></p>
+            </div>
+            <div class="card">
+              <div class="num">PRINCIPLE · 02</div>
+              <h3>The patient owns their data.</h3>
+              <p>Conversation, notes, and detailed logs live <b>on the patient's device</b>. Only what the patient explicitly approves flows up. At minimum, an on-track / off-track signal always reaches the clinician.</p>
+            </div>
+            <div class="card">
+              <div class="num">PRINCIPLE · 03</div>
+              <h3>Pull-first, with directed push.</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer"><div>Tend · Between-visit care</div><div>02 · Vision</div></div>
+      </div>
+    </section>
+
+    <!-- ─── 5. ARCHITECTURE — 5 components ─── -->
+    <section data-label="Architecture">
+      <div class="slide">
+        <div class="header">
+          <span class="mark">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Solution architecture</span>
+          <span class="right">03</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 12px; gap: 32px; justify-content: center;">
+          <div>
+            <div class="eyebrow">Five components, one plug-in layer</div>
+            <h2 class="display-md">
+              The same product across specialties.
+            </h2>
+          </div>
+
+          <div class="rail-5">
+            <div class="step">
+              <div class="n">01 · CONTRACT</div>
+              <div class="t">Prescription model</div>
+              <div class="d">Discrete tasks, continuous behaviors, constraints, check-in cadence, escalation thresholds, AI-assistance level. Authored in the clinician portal.</div>
+            </div>
+            <div class="step">
+              <div class="n">02 · CHANNEL</div>
+              <div class="t">Conversational interface</div>
+              <div class="d">LLM-mediated patient channel. Knows only what the clinician shared. Speaks in the clinician's tone — optionally cloned voice.</div>
+            </div>
+            <div class="step">
+              <div class="n">03 · TRUST</div>
+              <div class="t">Local-first share-up</div>
+              <div class="d">Conversation and detailed logs live on-device. A separate local service extracts shareable summaries the patient explicitly approves.</div>
+            </div>
+            <div class="step">
+              <div class="n">04 · SIGNAL</div>
+              <div class="t">Adherence tracking</div>
+              <div class="d">Objective where possible, self-reported where not. Two outputs: patient progress view, clinician adherence signal.</div>
+            </div>
+            <div class="step">
+              <div class="n">05 · GLANCE</div>
+              <div class="t">Clinician dashboard</div>
+              <div class="d">Glance-readable before a session. Adherence, prescription, themes the patient surfaced, escalation events. <em class="serif">Pre-session brief, not new inbox.</em></div>
+            </div>
+          </div>
+
+          <p class="body" style="max-width: 1700px; color: var(--ink-2);">
+            On top of these five, a thin <b style="color:var(--ink-0);">per-specialty plug-in</b> swaps in the specifics:
+            mental health uses exposures &amp; PHQ-9; nutrition uses meal plans &amp; weight; drug adherence uses regimens &amp; pharmacy data.
+          </p>
+        </div>
+
+        <div class="footer"><div>Tend · Between-visit care</div><div>03 · Architecture</div></div>
+      </div>
+    </section>
+
+    <!-- ─── 6. CLINICIAN SIDE — dashboard ─── -->
+    <section data-label="Clinician side">
+      <div class="slide" style="padding: 56px 88px;">
+        <div class="header">
+          <span class="mark">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The clinician side</span>
+          <span class="right">04</span>
+        </div>
+
+        <div class="twocol mirror" style="margin-top: 20px;">
+          <div class="shot-wrap">
+            <div class="shot contain" style="width:100%; height: 800px;">
+              <img src="../mockups/clinician-patient-overview.png" alt="Clinician · Patient panel · Chen Avraham overview">
+              <div class="caption"><span class="mono">Clinician · Patient panel</span></div>
+            </div>
+          </div>
+          <div class="copy">
+            <div class="eyebrow">05 · The glance</div>
+            <h2>Readable in <span class="accent">under a minute.</span><br/>Actionable in another.</h2>
+            <p class="lead">
+              A pre-session brief for a busy clinician — not a new inbox.
+              The surface that makes Tend prescribable.
+            </p>
+            <ul class="feat">
+              <li><span><b>At-a-glance.</b> 64% adherence within plan. Sleep at 4.2h flagged. Two episodes shared in the last 7 days.</span></li>
+              <li><span><b>Active prescription.</b> Imaginal exposure 4×/week. In-vivo café Mon &amp; Thu. Sleep window 23:30–06:30. AI assistance: <em class="serif">guided.</em></span></li>
+              <li><span><b>Pre-session note draft.</b> "Chen completed 2 of 4 imaginal exposures, declined Maya mid-way on one — flagged as deliberate, consistent with stated preference."</span></li>
+              <li><span><b>If the dashboard costs more time than it saves, Tend fails</b> — regardless of how the patient side works.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer"><div>Tend · Between-visit care</div><div>04 · Clinician</div></div>
+      </div>
+    </section>
+
+    <!-- ─── 7. PATIENT SIDE — Today/Maya + Plan/Tracking ─── -->
+    <section data-label="Patient side">
+      <div class="slide" style="padding: 56px 88px;">
+        <div class="header">
+          <span class="mark">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The patient side</span>
+          <span class="right">05</span>
+        </div>
+
+        <div class="col grow gap-24" style="margin-top: 16px; min-height: 0;">
+          <div>
+            <div class="eyebrow">05 · The channel + the signal</div>
+            <h2 class="display-md" style="letter-spacing:-0.02em;">
+              A <span class="accent">co-therapist</span> in the pocket. <span class="muted">Not a chatbot.</span>
+            </h2>
+          </div>
+
+          <div class="grid-2 grow" style="min-height: 0; gap: 24px;">
+            <div class="shot contain" style="height: 600px;">
+              <img src="../mockups/patient-today-and-maya.png" alt="Patient · Today + Maya chat">
+              <div class="caption"><span class="mono">Patient · Today &amp; Maya</span></div>
+            </div>
+            <div class="shot contain" style="height: 600px;">
+              <img src="../mockups/patient-plan-and-tracking.png" alt="Patient · Plan + How you're tracking">
+              <div class="caption"><span class="mono">Patient · Plan + tracking</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer"><div>Tend · Between-visit care</div><div>05 · Patient</div></div>
+      </div>
+    </section>
+
+    <!-- ─── 8. TRUST LAYER — share-up + consent moment ─── -->
+    <section data-label="Trust layer">
+      <div class="slide" style="padding: 56px 88px;">
+        <div class="header">
+          <span class="mark">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">The trust layer</span>
+          <span class="right">06</span>
+        </div>
+
+        <div class="twocol" style="margin-top: 20px;">
+          <div class="copy">
+            <div class="eyebrow">07 · Local-first + permissioned share-up</div>
+            <h2>Conversations live <span class="accent">on-device.</span><br/>Only what the patient<br/>approves leaves.</h2>
+            <p class="lead">
+              A separate, narrower-scoped local service extracts shareable summaries.
+              The patient sees, edits, and explicitly approves before <em class="serif">anything</em> syncs.
+              Every share is reversible until the next session.
+            </p>
+            <ul class="feat">
+              <li><span><b>Bullet-level consent.</b> The patient checks each line before it leaves the device.</span></li>
+              <li><span><b>Full transcripts default OFF.</b> Honesty depends on the boundary being real and visible.</span></li>
+              <li><span><b>This is the load-bearing privacy guarantee.</b> Same in every specialty.</span></li>
+            </ul>
+          </div>
+          <div class="shot-wrap">
+            <div class="shot contain" style="width:100%; height: 800px;">
+              <img src="../mockups/patient-share-consent.png" alt="Patient · Share with Dr. Levin · bullet-level consent moment">
+              <div class="caption"><span class="mono">Patient · Share with Dr. Levin</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer"><div>Tend · Between-visit care</div><div>06 · Trust</div></div>
+      </div>
+    </section>
+
+    <!-- ─── 9. CROSS-SPECIALTY ─── -->
+    <section data-label="Cross-specialty">
+      <div class="slide">
+        <div class="header">
+          <span class="mark">Tend</span>
+          <span class="dot"></span>
+          <span class="tag">Cross-specialty translation</span>
+          <span class="right">07</span>
+        </div>
+
+        <div class="col grow" style="padding-top: 12px; gap: 28px; justify-content: center;">
+          <div>
+            <div class="eyebrow">The same primitive · five slots, filled differently</div>
+            <h2 class="display-md">
+              The <em class="serif">vision is unified.</em><br/>
+              The specifics vary.
+            </h2>
+          </div>
+
+          <div class="cs-grid">
+            <article class="cs-card starter">
+              <div class="cs-card-head">
+                <div class="cs-tag">Specialty · A · where we start</div>
+                <h3 class="cs-name">Mental health</h3>
+              </div>
+              <div class="cs-list">
+                <div class="cs-row">
+                  <div class="cs-row-k">Inter-session work</div>
+                  <div class="cs-row-v">Exposures, thought records, BA, journaling</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Symptoms</div>
+                  <div class="cs-row-v">Panic, rumination, dissociation, urges</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Deviation</div>
+                  <div class="cs-row-v"><em class="serif">"Did exposure with safety behaviors"</em> · skipped</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Deterioration</div>
+                  <div class="cs-row-v">PHQ-9 / GAD-7 / SPIN climbing; avoidance broadens</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Objective signal</div>
+                  <div class="cs-row-v">Mostly self-report + SUDS</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cs-card">
+              <div class="cs-card-head">
+                <div class="cs-tag">Specialty · B</div>
+                <h3 class="cs-name">Nutrition</h3>
+              </div>
+              <div class="cs-list">
+                <div class="cs-row">
+                  <div class="cs-row-k">Inter-session work</div>
+                  <div class="cs-row-v">Meal-plan adherence, logging, prep</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Symptoms</div>
+                  <div class="cs-row-v">Cravings, binge urges, energy crashes, GI flares</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Deviation</div>
+                  <div class="cs-row-v">Off-plan meal, skipped log, sustained unhealthy eating</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Deterioration</div>
+                  <div class="cs-row-v">Weight, labs, energy, GI, ED behaviors regressing</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Objective signal</div>
+                  <div class="cs-row-v">Photo log + scale + occasional labs</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="cs-card">
+              <div class="cs-card-head">
+                <div class="cs-tag">Specialty · C</div>
+                <h3 class="cs-name">Drug adherence</h3>
+              </div>
+              <div class="cs-list">
+                <div class="cs-row">
+                  <div class="cs-row-k">Inter-session work</div>
+                  <div class="cs-row-v">Taking the regimen on time, under conditions</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Symptoms</div>
+                  <div class="cs-row-v">Side effects + breakthrough symptoms</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Deviation</div>
+                  <div class="cs-row-v">Missed dose, doubled dose, missed refill</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Deterioration</div>
+                  <div class="cs-row-v">Underlying condition recurring (BP, glucose, infection)</div>
+                </div>
+                <div class="cs-row">
+                  <div class="cs-row-k">Objective signal</div>
+                  <div class="cs-row-v"><b>Pharmacy / smart pillbox / refill data</b></div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="footer"><div>Tend · Between-visit care</div><div>07 · Cross-specialty</div></div>
+      </div>
+    </section>
+
+    <!-- ─── 9. CLOSE ─── -->
+    <section data-label="Close">
+      <div class="cover" style="background: radial-gradient(1400px 900px at 15% 85%, oklch(from var(--teal) l c h / 0.10), transparent 60%), var(--bg-0);">
+        <div class="brand">
+          <span class="markbox">t</span>
+          <span style="font-family: var(--font-serif); font-style: italic; font-weight: 500; color: var(--ink-0);">Tend</span>
+          <span style="width:4px;height:4px;border-radius:50%;background:var(--ink-3);margin:0 4px;"></span>
+          <span style="font-family:var(--font-mono); font-size:13px; letter-spacing:0.20em; text-transform:uppercase; color:var(--ink-2);">Closing</span>
+        </div>
+
+        <div style="align-self: center; max-width: 1600px;">
+          <div class="quote">
+            We don't magically make you less depressed.<br/>
+            The app doesn't know anything special —<br/>
+            it just <span class="accent">follows the clinician's orders,</span><br/>
+            and makes sure you do too.
+          </div>
+          <div class="quote-attr" style="font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: 32px; letter-spacing: -0.005em; text-transform: none; color: var(--ink-1); margin-top: 32px; line-height: 1.4;">We enforce the prescription the clinician gave out, already knowing it drives outcome.</div>
+        </div>
+
+        <div class="meta">
+          <div class="sig">
+            <span>Where to find us</span><b>contact@roomone.ventures</b>
+          </div>
+          <div class="mono muted">Tend · v0 · 2026</div>
+        </div>
+      </div>
+    </section>
+
+  </deck-stage>
+
+  <script src="deck-stage.js"></script>
+
+</body>
+
+</html>
