@@ -17,7 +17,7 @@ function PageHeader({ title, subtitle, otherLabel, otherHref }) {
       padding:'10px 18px', display:'flex', alignItems:'center', gap:14,
       fontFamily:'"Inter", system-ui, sans-serif',
     }}>
-      <a href="Tend.html" style={{
+      <a href="index.html" style={{
         display:'inline-flex', alignItems:'center', gap:8, textDecoration:'none', color:'#0f172a',
       }}>
         <svg width="22" height="22" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#0d6e6e" strokeWidth="1.4"/><path d="M16 8c0 6 4 8 8 10-4 2-8 4-8 10-0-6-4-8-8-10 4-2 8-4 8-10z" fill="#0d6e6e"/></svg>
